@@ -4,9 +4,10 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:untitled/chatgpt.dart';
 import 'package:untitled/result_screen.dart';
 import 'package:untitled/api_functions.dart';
-
+import 'package:untitled/api_functions.dart';
 
 class OcrPage extends StatefulWidget {
   const OcrPage({super.key});
@@ -81,30 +82,30 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
               backgroundColor: _isPermissionGranted ? Colors.transparent : null,
               body: _isPermissionGranted
                   ? Column(
-                children: [
-                  Expanded(
-                    child: Container(),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 30.0),
-                    child: Center(
-                      child: ElevatedButton(
-                        onPressed: _scanImage,
-                        child: const Text('Scan text'),
+                      children: [
+                        Expanded(
+                          child: Container(),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 30.0),
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: _scanImage,
+                              child: const Text('Scan text'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Center(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+                        child: const Text(
+                          'Camera permission denied',
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              )
-                  : Center(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-                  child: const Text(
-                    'Camera permission denied',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
             ),
           ],
         );
@@ -178,14 +179,27 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
       final inputImage = InputImage.fromFile(file);
       final recognizedText = await textRecognizer.processImage(inputImage);
 
-      await sendTextAndImage(recognizedText.text, pictureFile.path) // send txt, img to server
+      final recommendations = await getChatGptResponse(recognizedText.text);
 
-      await navigator.push(
-        MaterialPageRoute(
-          builder: (BuildContext context) =>
-              ResultScreen(text: recognizedText.text),
-        ),
-      );
+      if (recommendations != null) {
+        //추천 플리를 받아서 처리하는 파트
+
+        print('추천 플리 : $recommendations');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('failed')),
+        );
+      }
+
+      // await sendTextAndImage(
+      //     recognizedText.text, pictureFile.path); // send txt, img to server
+
+      // await navigator.push(
+      //   MaterialPageRoute(
+      //     builder: (BuildContext context) =>
+      //         ResultScreen(text: recognizedText.text),
+      //   ),
+      // );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
