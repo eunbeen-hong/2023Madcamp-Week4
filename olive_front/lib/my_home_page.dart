@@ -1,6 +1,7 @@
 import 'package:untitled/home_page.dart';
-import 'package:flutter/material.dart';
 import 'package:untitled/ocr.dart';
+import 'package:untitled/testing_page.dart';
+import 'package:flutter/material.dart';
 import 'home_page.dart';
 
 
@@ -17,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     OcrPage(),
-    Text('Login Page'),
+    TestPage(),
   ];
 
   final PageController _pageController = PageController();

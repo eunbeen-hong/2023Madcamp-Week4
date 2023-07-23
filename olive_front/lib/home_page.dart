@@ -35,54 +35,65 @@ class HomePage extends StatelessWidget {
             child: ListView.builder(
               padding: const EdgeInsets.all(20),
               itemCount: entries.length,
+              // itemExtent 제거
               itemBuilder: (BuildContext context, int index) {
-                String title = entries[index][0]; // 각 리스트의 첫 번째 항목을 제목으로 가져옴
+                String title = entries[index][0];
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 00.0), // 원하는 간격 조정
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      height: 200,
-                      color: Color(0xffe3e3e3),
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: entries[index].length - 1, // 제목을 제외한 나머지 항목 수
-                        itemBuilder: (BuildContext context, int hIndex) {
-                          String name = entries[index][hIndex + 1]; // 제목을 제외하고 가져옴
+                      Container(
+                        height: 200,
+                        color: Color(0xffe3e3e3),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: entries[index].length - 1,
+                          itemBuilder: (BuildContext context, int hIndex) {
+                            String name = entries[index][hIndex + 1];
 
-                          Widget inputSet = Column(
-                            children: [
-                              TextFormField(
-                                initialValue: name,
-                                decoration: InputDecoration(labelText: '이름'),
+                            return Container(
+                              width: 160,
+                              color: Colors.transparent,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset( // 이미지 추가
+                                      'assets/merry_gold.jpg',
+                                      width: 100,
+                                      height: 100,
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      '이름: $name', // 이름 텍스트
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      '나이:', // 나이 텍스트
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              TextFormField(
-                                decoration: InputDecoration(labelText: '나이'),
-                              ),
-                            ],
-                          );
-
-                          return Container(
-                            width: 160,
-                            color: Colors.transparent,
-                            child: Center(
-                              child: inputSet,
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               },
             ),
