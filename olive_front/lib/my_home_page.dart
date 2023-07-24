@@ -2,7 +2,6 @@ import 'package:untitled/home_page.dart';
 import 'package:untitled/ocr.dart';
 import 'package:untitled/testing_page.dart';
 import 'package:flutter/material.dart';
-import 'home_page.dart';
 
 
 class MyHomePage extends StatefulWidget {

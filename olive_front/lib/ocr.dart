@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:untitled/result_screen.dart';
-import 'package:untitled/api_functions.dart';
+
 
 
 class OcrPage extends StatefulWidget {
@@ -177,8 +177,6 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
 
       final inputImage = InputImage.fromFile(file);
       final recognizedText = await textRecognizer.processImage(inputImage);
-
-      await sendTextAndImage(recognizedText.text, pictureFile.path) // send txt, img to server
 
       await navigator.push(
         MaterialPageRoute(

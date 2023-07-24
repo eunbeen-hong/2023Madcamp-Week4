@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// import 'dart:io'; // not supported in mobile platforms
+import 'dart:io'; // not supported in mobile platforms
 
 Future<String> convertImageToBase64(String path) async {
   File imageFile = File(path); // Replace with the actual path to your image file
