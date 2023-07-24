@@ -196,3 +196,4 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
     }
   }
 }
+
