@@ -39,7 +39,6 @@ Future<void> sendTextAndImage(String text) async {
   }
 }
 
-
 Future<void> uploadImage() async {
   XFile? imageFile = await pickImage();
   if (imageFile == null) {
