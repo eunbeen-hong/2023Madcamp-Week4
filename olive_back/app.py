@@ -1,10 +1,8 @@
-# app.py
-
-import os
 from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, db, auth
 from flask_cors import CORS
+from api_functions import *
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -14,7 +12,8 @@ CORS(app)  # Enable CORS for all routes
 cred = credentials.Certificate(
     "./secret/madcamp4-olive-firebase-adminsdk-9vuqb-40f59b3716.json")
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://madcamp4-olive-default-rtdb.asia-southeast1.firebasedatabase.app/'
+    'databaseURL': 'https://madcamp4-olive-default-rtdb.asia-southeast1.firebasedatabase.app/',
+    'storageBucket': 'gs://madcamp4-olive.appspot.com'
 })
 
 # Routes
@@ -26,44 +25,53 @@ def hello_world():
 
 
 @app.route('/api/send_text_and_image', methods=['POST'])
-def send_text_and_image():
-    try:
-        data = request.json
-        text = data.get('text')
-        image = data.get('image')
-        if text and image:
-            # Handle text and image processing here
-            # For example, you can save the image to a file or database
-            # and perform any additional text processing required
-            # Return some response indicating success
-            return jsonify({'message': 'Text and image received and processed successfully!'})
-        else:
-            return jsonify({'error': 'Missing text or image data.'})
-    except Exception as e:
-        return jsonify({'error': str(e)})
+def send_text_and_image_route():
+    return send_text_and_image(request)
 
 
 @app.route('/api/upload_image', methods=['POST'])
-def upload_image():
-    # Handle image upload and processing here
-    # Return some response indicating success
-    return jsonify({'message': 'Image received and processed successfully!'})
+def upload_image_route():
+    return upload_image(request)
 
 
 @app.route('/api/send_text', methods=['POST'])
-def send_text():
-    try:
-        data = request.json
-        text = data.get('text')
-        if text:
-            print('Received text:', text)
-            # Handle text processing here
-            # Return some response indicating success
-            return jsonify({'message': 'Text received and processed successfully!'})
-        else:
-            return jsonify({'error': 'No text data received.'})
-    except Exception as e:
-        return jsonify({'error': str(e)})
+def send_text_route():
+    return send_text(request)
+
+
+@app.route('/api/create_user', methods=['POST'])
+def create_user_route():
+    return create_user(request)
+
+
+@app.route('/api/add_category', methods=['POST'])
+def add_category_route():
+    return add_category(request)
+
+
+@app.route('/api/create_book', methods=['POST'])
+def create_book_route():
+    return create_book(request)
+
+
+@app.route('/api/update_book_access_time', methods=['PUT'])
+def update_book_access_time_route():
+    return update_book_access_time(request)
+
+
+@app.route('/api/add_book_to_category', methods=['POST'])
+def add_book_to_category_route():
+    return add_book_to_category(request)
+
+
+@app.route('/api/add_song', methods=['POST'])
+def add_song_route():
+    return add_song(request)
+
+
+@app.route('/api/remove_book_from_category', methods=['POST'])
+def remove_book_from_category_route():
+    return remove_book_from_category(request)
 
 
 if __name__ == '__main__':

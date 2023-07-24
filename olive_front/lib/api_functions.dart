@@ -16,7 +16,6 @@ Future<XFile?> pickImage() async {
   return image;
 }
 
-
 Future<void> sendTextAndImage(String text) async {
   XFile? imageFile = await pickImage();
   if (imageFile == null) {
@@ -39,7 +38,6 @@ Future<void> sendTextAndImage(String text) async {
     print('Error: ${response.statusCode}');
   }
 }
-
 
 Future<void> uploadImage() async {
   XFile? imageFile = await pickImage();
@@ -64,7 +62,7 @@ Future<void> uploadImage() async {
 }
 
 Future<void> sendText(String text) async {
-  String urlString = 'http://localhost:3000/api/send_text';
+  String urlString = 'http://http://172.10.5.155/api/send_text';
   Map<String, String> headers = {'Content-Type': 'application/json'};
   Map<String, dynamic> data = {'text': text};
   String body = jsonEncode(data);
