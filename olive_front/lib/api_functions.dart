@@ -62,14 +62,23 @@ Future<void> uploadImage() async {
 }
 
 Future<void> sendText(String text) async {
-  String urlString = 'http://http://172.10.5.155/api/send_text';
+  print("sendi_ text button clicked");
+  String urlString = 'http://172.10.5.155/api/send_text';
+  print("1");
   Map<String, String> headers = {'Content-Type': 'application/json'};
+  print("2");
   Map<String, dynamic> data = {'text': text};
+  print("3");
   String body = jsonEncode(data);
+  print("4");
 
   Uri url = Uri.parse(urlString); // Convert String URL to Uri object
 
+  print("5");
+
   http.Response response = await http.post(url, headers: headers, body: body);
+
+  print("6");
 
   if (response.statusCode == 200) {
     // Request successful, parse the response data
@@ -78,5 +87,28 @@ Future<void> sendText(String text) async {
   } else {
     // Request failed, handle the error
     print('Error: ${response.statusCode}');
+  }
+}
+
+
+
+Future<Map<String, dynamic>> getUserInfoFromServer(String uid) async {
+  try {
+    String urlString = 'http://172.10.5.155/api/get_user_info/$uid';
+    Uri url = Uri.parse(urlString);
+
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      return responseData;
+    } else {
+      // If the server returned an error, return an empty map
+      return {};
+    }
+  } catch (e) {
+    print('Error: $e');
+    // If an error occurred, return an empty map
+    return {};
   }
 }

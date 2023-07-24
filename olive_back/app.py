@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import firebase_admin
-from firebase_admin import credentials, db, auth
+from firebase_admin import credentials
 from flask_cors import CORS
 from api_functions import *
 
@@ -19,7 +19,7 @@ firebase_admin.initialize_app(cred, {
 # Routes
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def hello_world():
     return 'Hello, World!'
 
@@ -74,5 +74,11 @@ def remove_book_from_category_route():
     return remove_book_from_category(request)
 
 
+@app.route('/api/get_user_info/<string:uid>', methods=['GET'])
+def get_user_info_route(uid):
+    return get_user_info(uid)
+
+
 if __name__ == '__main__':
-    app.run(port=3000)
+    app.run(host='0.0.0.0', port=80)
+# source venv/bin/activate
