@@ -54,6 +54,11 @@ def create_book_route():
     return create_book(request)
 
 
+@app.route('/api/update_book_access_time', methods=['PUT'])
+def update_book_access_time_route():
+    return update_book_access_time(request)
+
+
 @app.route('/api/add_book_to_category', methods=['POST'])
 def add_book_to_category_route():
     return add_book_to_category(request)
@@ -62,6 +67,11 @@ def add_book_to_category_route():
 @app.route('/api/add_song', methods=['POST'])
 def add_song_route():
     return add_song(request)
+
+
+@app.route('/api/remove_book_from_category', methods=['POST'])
+def remove_book_from_category_route():
+    return remove_book_from_category(request)
 
 
 if __name__ == '__main__':
