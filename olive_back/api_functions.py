@@ -2,6 +2,7 @@ from flask import request, jsonify
 import firebase_admin
 from firebase_admin import db
 from google.cloud import storage
+import datetime
 
 
 def send_text_and_image(request):
@@ -60,6 +61,14 @@ def create_user(request):
         'categories': {}
     })
 
+    # add a basic category to the user's shelf
+    categories_ref = new_user_ref.child('categories')
+    new_category_ref = categories_ref.push()
+    new_category_ref.set({
+        'category_name': 'Basic',
+        'books': {}
+    })
+
     return jsonify({'message': 'User created successfully!'}), 200
 
 
@@ -97,17 +106,18 @@ def create_book(request):
     for category_name in category_names:
         category_query = db.reference(f'users/{user_id}/categories').order_by_child(
             'category_name').equal_to(category_name).get()
-
         for key, value in category_query.items():
             category_ids.append(key)
+
+    current_time = datetime.datetime.now().isoformat()
 
     # Add the new book to the user's category shelf in the Firebase Realtime Database
     user_ref = db.reference(f'users/{user_id}')
     books_ref = user_ref.child('books')
     new_book_ref = books_ref.push()
     new_book_ref.set({
-        "categoty": category_ids,
         'title': title,
+        'last_accessed': current_time,
         'images': [{
             'url': image_url,
             'songs': songs
@@ -127,6 +137,21 @@ def create_book(request):
     return jsonify({'message': 'Book added successfully!'}), 200
 
 
+def update_book_access_time(request):
+    data = request.json
+    user_id = data.get('user_id')
+    book_id = data.get('book_id')
+
+    current_time = datetime.datetime.now().isoformat()
+
+    # update last_accessed time of book
+    user_ref = db.reference(f'users/{user_id}')
+    book_ref = user_ref.child(f'books/{book_id}')
+    book_ref.child('last_accessed').set(current_time)
+
+    return jsonify({'message': 'Book access time updated successfully!'}), 200
+
+
 def add_book_to_category(request):
     # add book id to category
     data = request.json
@@ -136,14 +161,12 @@ def add_book_to_category(request):
 
     category_query = db.reference(f'users/{user_id}/categories').order_by_child(
         'category_name').equal_to(category_name).get()
-
     category_id = None
     for key, _ in category_query.items():
         category_id = key
 
     book_query = db.reference(f'users/{user_id}/books').order_by_child(
         'title').equal_to(book_name).get()
-
     book_id = None
     for key, _ in book_query.items():
         book_id = key
@@ -166,11 +189,10 @@ def add_song(request):
     user_id = data.get('user_id')
     book_name = data.get('book_name')
     image_idx = data.get('image_idx')
-    song = data.get('song')
+    songs = data.get('songs')
 
     book_query = db.reference(f'users/{user_id}/books').order_by_child(
         'title').equal_to(book_name).get()
-
     book_id = None
     for key, _ in book_query.items():
         book_id = key
@@ -179,10 +201,55 @@ def add_song(request):
     user_ref = db.reference(f'users/{user_id}')
     image_ref = user_ref.child(f'books/{book_id}/images/{image_idx}')
     songs_list = image_ref.child('songs').get()
-    if songs_list and song not in songs_list:
-        songs_list.append(song)
+    if songs_list:
+        for song in songs:
+            if song not in songs_list:
+                songs_list.append(song)
         image_ref.child('songs').set(songs_list)
     else:
-        image_ref.child('songs').set([song])
+        image_ref.child('songs').set(songs)
 
-    return jsonify({'message': 'Song added successfully!'}), 200
+    return jsonify({'message': 'Songs added successfully!'}), 200
+
+
+def remove_book_from_category(request):
+    try:
+        # remove book id from category
+        data = request.json
+        user_id = data.get('user_id')
+        category_name = data.get('category_name')
+        book_name = data.get('book_name')
+
+        if not user_id or not category_name or not book_name:
+            return jsonify({'error': 'Missing user_id, category_name, or book_name in the request.'}), 400
+
+        category_query = db.reference(f'users/{user_id}/categories').order_by_child(
+            'category_name').equal_to(category_name).get()
+        category_id = None
+        for key, _ in category_query.items():
+            category_id = key
+
+        if not category_id:
+            return jsonify({'error': 'Category not found for the given user.'}), 404
+
+        book_query = db.reference(f'users/{user_id}/books').order_by_child(
+            'title').equal_to(book_name).get()
+        book_id = None
+        for key, _ in book_query.items():
+            book_id = key
+
+        if not book_id:
+            return jsonify({'error': 'Book not found for the given user.'}), 404
+
+        # Remove the book_id from the category's books list
+        user_ref = db.reference(f'users/{user_id}')
+        category_ref = user_ref.child(f'categories/{category_id}')
+        books_list = category_ref.child('books').get()
+        if books_list and book_id in books_list:
+            books_list.remove(book_id)
+            category_ref.child('books').set(books_list)
+
+        return jsonify({'message': 'Book removed from category successfully!'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
