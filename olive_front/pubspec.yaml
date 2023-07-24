@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.3
+  image_picker: ^0.8.4
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -57,4 +59,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/olive_icon.png
+    - assets/
+#    - assets/olive_icon.png
