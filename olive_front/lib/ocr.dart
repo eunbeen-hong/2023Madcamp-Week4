@@ -6,8 +6,6 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:untitled/result_screen.dart';
 
-
-
 class OcrPage extends StatefulWidget {
   const OcrPage({super.key});
 
@@ -81,30 +79,30 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
               backgroundColor: _isPermissionGranted ? Colors.transparent : null,
               body: _isPermissionGranted
                   ? Column(
-                children: [
-                  Expanded(
-                    child: Container(),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 30.0),
-                    child: Center(
-                      child: ElevatedButton(
-                        onPressed: _scanImage,
-                        child: const Text('Scan text'),
+                      children: [
+                        Expanded(
+                          child: Container(),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 30.0),
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: _scanImage,
+                              child: const Text('Scan text'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Center(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+                        child: const Text(
+                          'Camera permission denied',
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              )
-                  : Center(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-                  child: const Text(
-                    'Camera permission denied',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
             ),
           ],
         );
@@ -176,19 +174,19 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
       final file = File(pictureFile.path);
 
       final inputImage = InputImage.fromFile(file);
+      final textRecognizer =
+          TextRecognizer(script: TextRecognitionScript.korean);
       final recognizedText = await textRecognizer.processImage(inputImage);
 
-<<<<<<< HEAD
-=======
-      await sendTextAndImage(recognizedText.text); // send txt, img to server
-
->>>>>>> 46ea6a3580e67512d537fc0bd595d21a92fbc95a
       await navigator.push(
         MaterialPageRoute(
           builder: (BuildContext context) =>
               ResultScreen(text: recognizedText.text),
         ),
       );
+
+      textRecognizer.close();
+      
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
