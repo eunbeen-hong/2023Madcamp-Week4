@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-//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
 
 // ChatGPT API 서버의 엔드포인트 URL
 const String chatGptApiUrl = 'YOUR_CHATGPT_API_URL';
