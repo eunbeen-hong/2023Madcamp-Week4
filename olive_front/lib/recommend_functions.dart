@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -118,7 +117,16 @@ String? _extractVideoIdFromUrl(String url) {
 }
 
 Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
-  String apiKey = 'YOUR_YOUTUBE_API_KEY';
+  String apiKey;
+  try {
+    File apiKeyFile = File('secret/youtube_api_key.json');
+    String apiKeyJson = await apiKeyFile.readAsString();
+    Map<String, dynamic> apiKeyData = json.decode(apiKeyJson);
+    apiKey = apiKeyData['youtube_api_key'];
+  } catch (e) {
+    throw Exception('Failed to read YouTube API key: $e');
+  }
+
   String baseUrl = 'https://www.googleapis.com/youtube/v3/videos';
   String videoIdQuery = videoIds.join(',');
 
