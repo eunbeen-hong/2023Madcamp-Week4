@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/api_functions.dart';
+import 'dart:convert';
 
 class TestPage extends StatefulWidget {
   @override
@@ -8,6 +9,8 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   TextEditingController _textController = TextEditingController();
+  Map<String, dynamic>? _userInfo;
+
 
   @override
   void dispose() {
@@ -39,7 +42,28 @@ class _TestPageState extends State<TestPage> {
             ElevatedButton(
                 onPressed: () => uploadImage(),
                 child: Text('Send Image to Flask'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                String uid = '-Na10IK5-1gZE07mFjGz'; // Replace with the actual user ID
+                Map<String, dynamic> userInfo = await getUserInfoFromServer(uid);
+                setState(() {
+                  _userInfo = userInfo;
+                });
+              },
+              child: Text('Get User Info'),
+            ),
+            SizedBox(height: 16),
+            _userInfo != null
+                ? Column(
+              children: [
+                Text('User Info:'),
+                Text(_userInfo.toString()),
+                // Add other fields as needed
+              ],
             )
+                : Text('User Info not fetched yet'),
           ],
         ),
       ),

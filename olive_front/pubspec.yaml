@@ -63,4 +63,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
-#    - assets/olive_icon.png
+    - assets/olive_icon.png

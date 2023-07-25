@@ -1,6 +1,6 @@
 from flask import request, jsonify
 import firebase_admin
-from firebase_admin import db
+from firebase_admin import db, auth
 from google.cloud import storage
 import datetime
 
@@ -23,9 +23,30 @@ def send_text_and_image(request):
 
 
 def upload_image(request):
-    # Handle image upload and processing here
-    # Return some response indicating success
-    return jsonify({'message': 'Image received and processed successfully!'})
+    # Assuming you receive the image data in the request
+    image_data = request.get_json().get('image')
+
+    # Initialize Firebase Admin SDK (if not already initialized)
+    if not firebase_admin._apps:
+        cred = credentials.Certificate(
+            './secret/madcamp4-olive-firebase-adminsdk-9vuqb-40f59b3716.json')
+        firebase_admin.initialize_app(cred, {
+            'storageBucket': 'madcamp4-olive.appspot.com'
+        })
+
+    # Create a unique filename for the image (you can use any method to generate a unique name)
+    filename = 'image.jpg'
+
+    # Upload the image data to Firebase Storage
+    bucket = storage.bucket()
+    blob = bucket.blob(filename)
+    blob.upload_from_string(image_data, content_type='image/jpeg')
+
+    # Get the public URL of the uploaded image
+    url = blob.public_url
+
+    # Return the URL to the client or any other response you want
+    return jsonify({'url': url})
 
 
 def send_text(request):
@@ -253,3 +274,15 @@ def remove_book_from_category(request):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+def get_user_info(uid):
+    try:
+        # Assuming you have a users collection in Firebase Realtime Database
+        user_data = db.reference('users').child(uid).get()
+        if user_data:
+            return jsonify(user_data)
+        else:
+            return jsonify({'error': 'User not found'}), 404
+    except auth.AuthError as e:
+        return jsonify({'error': str(e)}), 400
