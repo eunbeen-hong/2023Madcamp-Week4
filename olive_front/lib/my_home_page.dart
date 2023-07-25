@@ -2,8 +2,12 @@ import 'package:untitled/home_page.dart';
 import 'package:untitled/ocr.dart';
 import 'package:untitled/testing_page.dart';
 import 'package:flutter/material.dart';
+
 import 'home_page.dart';
 import 'package:untitled/add_book_page.dart';
+
+import 'package:untitled/youtube_test_page.dart';
+import 'package:untitled/youtubeplayer.dart';
 
 
 
@@ -21,6 +25,8 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),
     OcrPage(),
     TestPage(),
+    YoutubePage(),
+    YoutubePlayerPage()
   ];
 
   final PageController _pageController = PageController();
@@ -82,6 +88,18 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.search),
               label: 'Search',
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.developer_mode),
+              label: 'Dev Tools',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.developer_mode),
+              label: 'Dev Tools',
+            )
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Color(0xff31795B),

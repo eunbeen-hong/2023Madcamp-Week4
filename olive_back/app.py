@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 import firebase_admin
-from firebase_admin import credentials, db, auth
+from firebase_admin import credentials
 from flask_cors import CORS
 from api_functions import *
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -10,19 +11,25 @@ CORS(app)  # Enable CORS for all routes
 
 # Load Firebase credentials
 cred = credentials.Certificate(
-    "./secret/madcamp4-olive-firebase-adminsdk-9vuqb-40f59b3716.json")
+    "./secret/madcamp4-olive-firebase-adminsdk-9vuqb-693c936edd.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://madcamp4-olive-default-rtdb.asia-southeast1.firebasedatabase.app/',
     'storageBucket': 'gs://madcamp4-olive.appspot.com'
 })
 
+# GOOGLE APPLICATION CREDENTIALS
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'secret/madcamp4-olive-fa7204c1d877.json'
+
 # Routes
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def hello_world():
     return 'Hello, World!'
 
+@app.route('/api/ocr_result', methods=['POST'])
+def ocr_result_route():
+    return ocr_result(request)
 
 @app.route('/api/send_text_and_image', methods=['POST'])
 def send_text_and_image_route():
@@ -74,5 +81,17 @@ def remove_book_from_category_route():
     return remove_book_from_category(request)
 
 
+@app.route('/api/get_user_info/<string:uid>', methods=['GET'])
+def get_user_info_route(uid):
+    return get_user_info(uid)
+
+
 if __name__ == '__main__':
-    app.run(port=3000)
+    app.run(host='0.0.0.0', port=80)
+    
+    
+'''
+source venv/bin/activate
+python3 app.py
+
+'''
