@@ -172,12 +172,21 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
       final pictureFile = await _cameraController!.takePicture();
 
       final file = File(pictureFile.path);
+      await uploadImage(file);
 
       final inputImage = InputImage.fromFile(file);
       final textRecognizer =
           TextRecognizer(script: TextRecognitionScript.korean);
       final recognizedText = await textRecognizer.processImage(inputImage);
 
+<<<<<<< HEAD
+      print("here");
+      print(inputImage.runtimeType.toString());
+
+      await sendTextAndImage(recognizedText.text); // send txt, img to server
+
+=======
+>>>>>>> ca3f0bcf7cdc3ba885274307e15ad8cc4810cf48
       await navigator.push(
         MaterialPageRoute(
           builder: (BuildContext context) =>
