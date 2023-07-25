@@ -2,7 +2,7 @@ import 'package:untitled/home_page.dart';
 import 'package:untitled/ocr.dart';
 import 'package:untitled/testing_page.dart';
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'package:untitled/youtube_test_page.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -19,6 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),
     OcrPage(),
     TestPage(),
+    YoutubePage()
   ];
 
   final PageController _pageController = PageController();
@@ -72,6 +73,10 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Profile',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.developer_mode),
+              label: 'Dev Tools',
             ),
           ],
           currentIndex: _selectedIndex,

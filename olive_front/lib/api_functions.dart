@@ -1,7 +1,12 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
+<<<<<<< HEAD
 import 'dart:io'; // not supported in mobile platforms
+=======
+// import 'dart:io'; // not supported in mobile platforms
+//import 'dart:io'; // not supported in mobile platforms
+>>>>>>> ca3f0bcf7cdc3ba885274307e15ad8cc4810cf48
 
 class OCRResult {
   final List<Map<String, String>> songList;
