@@ -1,8 +1,19 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 
 Future<String> getYouTubeUrl(String songTitle, String artist) async {
-  String apiKey = 'AIzaSyDWgwIAfQS7V3woZxrqChy8OhmFWQ5ZpCA';
+  // Read the API key from the JSON file
+  String apiKey;
+  try {
+    File apiKeyFile = File('secret/youtube_api_key.json');
+    String apiKeyJson = await apiKeyFile.readAsString();
+    Map<String, dynamic> apiKeyData = json.decode(apiKeyJson);
+    apiKey = apiKeyData['youtube_api_key'];
+  } catch (e) {
+    throw Exception('Failed to read YouTube API key: $e');
+  }
+
   String baseUrl = 'https://www.googleapis.com/youtube/v3/search';
   String query = '$songTitle $artist';
 
