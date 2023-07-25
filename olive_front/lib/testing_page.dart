@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/api_functions.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:untitled/recommend_functions.dart';
 import 'dart:io';
 import 'dart:convert';
 
@@ -39,6 +40,11 @@ class _TestPageState extends State<TestPage> {
             ElevatedButton(
               onPressed: () => sendText(_textController.text), // Pass the text from the text field to sendText function
               child: Text('Send Text to Flask'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => __scanImage(),
+              child: Text('recommendation'),
             ),
             SizedBox(height: 16),
             ElevatedButton(
