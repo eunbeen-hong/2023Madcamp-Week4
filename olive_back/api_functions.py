@@ -3,6 +3,44 @@ import firebase_admin
 from firebase_admin import db, auth
 from google.cloud import storage
 import datetime
+import base64
+from bard import get_song_list
+
+
+def ocr_result(request):
+    try:
+        data = request.json
+        book_name = data.get('book_name')
+        author = data.get('author')
+        text = data.get('text')
+        image = data.get('image')
+        if text and image:
+            # Decode the base64 image data
+            image_bytes = base64.b64decode(image)
+
+            # Create a unique filename for the image (you can use any method to generate a unique name)
+            filename = 'image.jpg'
+
+            # Replace 'your_project_id' with your actual Firebase project ID
+            bucket_name = 'madcamp4-olive.appspot.com'  # Replace with your Firebase Storage bucket name
+
+            # Upload the image data to Firebase Storage
+            storage_client = storage.Client()
+            bucket = storage_client.bucket(bucket_name)
+            blob = bucket.blob(filename)
+            blob.upload_from_string(image_bytes, content_type='image/jpeg')
+
+            # Get the public URL of the uploaded image
+            url = blob.public_url
+
+            song_list = get_song_list(book_name, author, text)
+
+            # Return a response indicating success and the URL of the uploaded image
+            return jsonify({'message': 'Text and image received and processed successfully!', 'image_url': url, 'song_list': song_list})
+        else:
+            return jsonify({'error': 'Missing text or image data.'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 
 def send_text_and_image(request):
@@ -11,11 +49,29 @@ def send_text_and_image(request):
         text = data.get('text')
         image = data.get('image')
         if text and image:
-            # Handle text and image processing here
-            # For example, you can save the image to a file or database
-            # and perform any additional text processing required
-            # Return some response indicating success
-            return jsonify({'message': 'Text and image received and processed successfully!'})
+            # Decode the base64 image data
+            image_bytes = base64.b64decode(image)
+
+            # Create a unique filename for the image (you can use any method to generate a unique name)
+            filename = 'image.jpg'
+
+            # Replace 'your_project_id' with your actual Firebase project ID
+            bucket_name = 'madcamp4-olive.appspot.com'  # Replace with your Firebase Storage bucket name
+
+            # Upload the image data to Firebase Storage
+            storage_client = storage.Client()
+            bucket = storage_client.bucket(bucket_name)
+            blob = bucket.blob(filename)
+            blob.upload_from_string(image_bytes, content_type='image/jpeg')
+
+            # Get the public URL of the uploaded image
+            url = blob.public_url
+
+            # Perform text processing or other tasks with the text and image data as needed
+            # For example, you can save the text to a database, along with the image URL
+
+            # Return a response indicating success and the URL of the uploaded image
+            return jsonify({'message': 'Text and image received and processed successfully!', 'url': url})
         else:
             return jsonify({'error': 'Missing text or image data.'})
     except Exception as e:
@@ -23,30 +79,31 @@ def send_text_and_image(request):
 
 
 def upload_image(request):
-    # Assuming you receive the image data in the request
-    image_data = request.get_json().get('image')
+    try:
+        # Assuming you receive the image data in the request JSON payload
+        image_data = request.json.get('image')
 
-    # Initialize Firebase Admin SDK (if not already initialized)
-    if not firebase_admin._apps:
-        cred = credentials.Certificate(
-            './secret/madcamp4-olive-firebase-adminsdk-9vuqb-40f59b3716.json')
-        firebase_admin.initialize_app(cred, {
-            'storageBucket': 'madcamp4-olive.appspot.com'
-        })
+        # Decode the base64 image data
+        image_bytes = base64.b64decode(image_data)
 
-    # Create a unique filename for the image (you can use any method to generate a unique name)
-    filename = 'image.jpg'
+        # Create a unique filename for the image (you can use any method to generate a unique name)
+        filename = 'image.jpg'
 
-    # Upload the image data to Firebase Storage
-    bucket = storage.bucket()
-    blob = bucket.blob(filename)
-    blob.upload_from_string(image_data, content_type='image/jpeg')
+        # Upload the image data to Firebase Storage
+        storage_client = storage.Client()
+        bucket = storage_client.bucket("madcamp4-olive.appspot.com")
+        blob = bucket.blob(filename)
+        blob.upload_from_string(image_bytes, content_type='image/jpeg')
 
-    # Get the public URL of the uploaded image
-    url = blob.public_url
+        # Get the public URL of the uploaded image
+        url = blob.public_url
 
-    # Return the URL to the client or any other response you want
-    return jsonify({'url': url})
+        # Return the URL to the client or any other response you want
+        return jsonify({'url': url}), 200
+
+    except Exception as e:
+        print("Error uploading image to Firebase Storage:", str(e))
+        return jsonify({'error': 'Failed to upload image'}), 500
 
 
 def send_text(request):
