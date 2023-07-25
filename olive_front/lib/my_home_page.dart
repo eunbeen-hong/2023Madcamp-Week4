@@ -2,8 +2,13 @@ import 'package:untitled/home_page.dart';
 import 'package:untitled/ocr.dart';
 import 'package:untitled/testing_page.dart';
 import 'package:flutter/material.dart';
+
+import 'home_page.dart';
+import 'package:untitled/add_book_page.dart';
+
 import 'package:untitled/youtube_test_page.dart';
 import 'package:untitled/youtubeplayer.dart';
+
 
 
 class MyHomePage extends StatefulWidget {
@@ -27,16 +32,23 @@ class _MyHomePageState extends State<MyHomePage> {
   final PageController _pageController = PageController();
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 1) { // "Add" 아이템이 선택되었을 때
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AddBookPage()), // AddBookPage로 이동
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
 
-    // Navigate to the selected page
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+      // Navigate to the selected page
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   void _onPageChanged(int index) {
@@ -49,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffe3e3e3),
+      backgroundColor: Color(0xffffffff),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 0.0), // 바텀 네비게이션 바의 높이인 56.0만큼의 패딩 적용
         //color: Color(0xffe3e3e3),
@@ -65,8 +77,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add_box),
+              label: 'Add',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.search),
@@ -86,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
             )
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800],
+          selectedItemColor: Color(0xff31795B),
           onTap: _onItemTapped,
           selectedFontSize: 10.0, // 선택된 아이템의 텍스트 크기 설정
           unselectedFontSize: 10.0, // 선택되지 않은 아이템의 텍스트 크기 설정
@@ -95,3 +111,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+

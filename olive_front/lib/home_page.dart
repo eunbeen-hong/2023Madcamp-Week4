@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 25.0),
               decoration: BoxDecoration(
                 color: Color(0xff31795B),
                 borderRadius: BorderRadius.only(
@@ -36,24 +36,41 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬 설정
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
+                    padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0, bottom: 0.0),
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬 설정
                       children: [
                         Container(
-                          width: 40,
-                          height: 40,
+                          width: 20,
+                          height: 20,
                           alignment: Alignment.center,
                           child: Image.asset('assets/olive_icon.png'),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          '모락모락 팬케이크',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          '님',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: 4),
                   Text(
                     '나만의 책 playlist',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -63,49 +80,49 @@ class HomePage extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.all(20),
-                itemCount: entries.length + 1, // 리스트 길이를 1만큼 늘림
+                padding: const EdgeInsets.all(10),
+                itemCount: entries.length + 1,
                 itemBuilder: (BuildContext context, int index) {
-                  if (index == entries.length) { // 마지막 항목에 추가 요소 삽입
-                    return GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AddCategoryPage(),
-                        );
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        elevation: 4, // 그림자 효과 크기 조정
-                        child: Container(
-                          width: 160,
-                          height: 100,
-                          color: Color(0xffffffff),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                alignment: Alignment.center,
-                                child: Image.asset('assets/olive_icon.png'),
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                '책칸 추가하기',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                  if (index == entries.length) {
+                      return GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AddCategoryPage(),
+                          );
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          elevation: 4, // 그림자 효과 크기 조정
+                          child: Container(
+                            width: 160,
+                            height: 100,
+                            color: Color(0xffffffff),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  alignment: Alignment.center,
+                                  child: Image.asset('assets/olive_icon.png'),
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 8),
+                                Text(
+                                  '책칸 추가하기',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
+                      );
                   }
 
                   String title = entries[index][0]; // 각 리스트의 첫 번째 항목을 제목으로 가져옴
@@ -131,7 +148,6 @@ class HomePage extends StatelessWidget {
                           itemCount: entries[index].length - 1, // 제목을 제외한 나머지 항목 수
                           itemBuilder: (BuildContext context, int hIndex) {
                             String name = entries[index][hIndex + 1]; // 제목을 제외하고 가져옴
-
                             return Container(
                               width: 160,
                               color: Colors.transparent,
