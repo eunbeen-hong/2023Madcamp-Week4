@@ -73,37 +73,62 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
       appBar: AppBar(
         title: const Text('YouTube Player'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          YoutubePlayer(
-            controller: _controller,
-            showVideoProgressIndicator: true,
-            bottomActions: [
-              CurrentPosition(),
-              ProgressBar(isExpanded: true),
-              PlayPauseButton()
+      body: YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: false,
+        ),
+        builder: (context, player) {
+          return Column(
+            children: [
+              // YoutubePlayer 위젯
+              player,
+
+              const SizedBox(height: 16.0),
+
+              // 버튼들
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: _controller.value.isPlaying
+                        ? _controller.pause
+                        : _controller.play,
+                    icon: Icon(
+                      _controller.value.isPlaying
+                          ? Icons.pause
+                          : Icons.play_arrow,
+                    ),
+                  ),
+
+                  // Progress Bar
+                  Expanded(
+                    child: ProgressBar(
+                      controller: _controller,
+                      isExpanded: true,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16.0),
+
+              // URL 입력 필드와 Play 버튼
+              TextField(
+                controller: _idController,
+                decoration: InputDecoration(
+                  labelText: 'Enter YouTube URL',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _playYoutubeVideoFromUrl,
+                child: const Text('Play Video'),
+              ),
             ],
-            onEnded: (data) {
-              // 비디오 재생이 끝나면 플레이어를 일시정지합니다.
-              _controller.pause();
-              _showSnackBar('Next Video Started!');
-            },
-          ),
-          const SizedBox(height: 16.0),
-          TextField(
-            controller: _idController,
-            decoration: InputDecoration(
-              labelText: 'Enter YouTube URL',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: _playYoutubeVideoFromUrl,
-            child: const Text('Play Video'),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
