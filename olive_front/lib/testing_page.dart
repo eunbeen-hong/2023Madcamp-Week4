@@ -43,7 +43,7 @@ class _TestPageState extends State<TestPage> {
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => _scanImage(),
+              onPressed: () => scanImage(),
               child: Text('recommendation'),
             ),
             SizedBox(height: 16),
