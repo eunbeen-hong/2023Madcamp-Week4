@@ -7,6 +7,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/youtube.dart';
 import 'package:untitled/api_functions.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 Future<OCRResult> scanImage() async {
   // // check if the camera is available
@@ -20,8 +22,8 @@ Future<OCRResult> scanImage() async {
     // final file = File(pictureFile.path);
 
     final imagePicker = ImagePicker();
-    XFile? xFile  = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (xFile  == null) {
+    XFile? xFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (xFile == null) {
       print('No image selected.');
       return OCRResult(songList: [], imageUrl: '');
     }
@@ -29,8 +31,7 @@ Future<OCRResult> scanImage() async {
     File file = File(xFile.path);
 
     final inputImage = InputImage.fromFile(file);
-    final textRecognizer =
-    TextRecognizer(script: TextRecognitionScript.korean);
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.korean);
     final recognizedText = await textRecognizer.processImage(inputImage);
 
     // await navigator.push(
@@ -62,7 +63,6 @@ Future<OCRResult> scanImage() async {
     }
 
     return result;
-
   } catch (e) {
     // ScaffoldMessenger.of(context).showSnackBar(
     //   const SnackBar(
@@ -76,7 +76,6 @@ Future<OCRResult> scanImage() async {
   return OCRResult(songList: [], imageUrl: '');
 }
 
-
 Future<List<String>> imageToUrls() async {
   OCRResult result = await scanImage();
 
@@ -86,7 +85,7 @@ Future<List<String>> imageToUrls() async {
     String? artist = song['artist'];
     if (title != null && artist != null) {
       String? youtubeUrl = await getYouTubeUrl(title, artist);
-      if (youtubeUrl != null){
+      if (youtubeUrl != null) {
         urls.add(youtubeUrl);
       }
     }
@@ -118,5 +117,30 @@ String? _extractVideoIdFromUrl(String url) {
   return null;
 }
 
-// TODO: youtube_explode package
-// id list to youtube video titles
+Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
+  String apiKey = 'YOUR_YOUTUBE_API_KEY';
+  String baseUrl = 'https://www.googleapis.com/youtube/v3/videos';
+  String videoIdQuery = videoIds.join(',');
+
+  Uri uri = Uri.parse('$baseUrl?part=snippet&id=$videoIdQuery&key=$apiKey');
+
+  var response = await http.get(uri);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    Map<String, String> videoTitles = {};
+
+    if (data['items'] != null) {
+      for (var item in data['items']) {
+        String videoId = item['id'];
+        String title = item['snippet']['title'];
+        videoTitles[videoId] = title;
+      }
+    }
+
+    return videoTitles;
+  } else {
+    throw Exception('Failed to load video titles');
+  }
+}
+
