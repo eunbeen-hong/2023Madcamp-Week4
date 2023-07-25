@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:untitled/youtube.dart';
 import 'package:untitled/api_functions.dart';
 
-Future<OCRResult> _scanImage() async {
+Future<OCRResult> scanImage() async {
   // // check if the camera is available
   // if (_cameraController == null) return;
 
@@ -78,7 +78,7 @@ Future<OCRResult> _scanImage() async {
 
 
 Future<List<String>> imageToUrls() async {
-  OCRResult result = await _scanImage();
+  OCRResult result = await scanImage();
 
   List<String> urls = [];
   for (var song in result.songList) {
@@ -94,4 +94,29 @@ Future<List<String>> imageToUrls() async {
 
   return urls;
 }
+
+Future<List<String>> UrlsToYoutubeIds(List<String> urls) async {
+  List<String> ids = [];
+
+  for (var url in urls) {
+    String? id = _extractVideoIdFromUrl(url);
+
+    if (id != null) {
+      ids.add(id);
+    }
+  }
+
+  return ids;
+}
+
+String? _extractVideoIdFromUrl(String url) {
+  Uri? uri = Uri.tryParse(url);
+  if (uri != null && uri.host == 'www.youtube.com') {
+    String? videoId = uri.queryParameters['v'];
+    return videoId;
+  }
+  return null;
+}
+
+// id list to youtube video titles
 
