@@ -151,3 +151,28 @@ Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
     throw Exception('Failed to load video titles');
   }
 }
+
+Future<List<Tuple3<String, String, String>>> getUrlVideoInfo(List<String> urls) async {
+  List<String> videoIds = await UrlsToYoutubeIds(urls);
+  Map<String, String> videoTitles = await getYoutubeVideoTitles(videoIds);
+
+  List<Tuple3<String, String, String>> videoInfoList = [];
+  for (int i = 0; i < urls.length; i++) {
+    String url = urls[i];
+    String videoId = videoIds[i];
+    String videoTitle = videoTitles[videoId] ?? 'Title not found';
+
+    videoInfoList.add(Tuple3(url, videoId, videoTitle));
+  }
+
+  return videoInfoList;
+}
+
+// Tuple3 class
+class Tuple3<T1, T2, T3> {
+  final T1 item1;
+  final T2 item2;
+  final T3 item3;
+
+  Tuple3(this.item1, this.item2, this.item3);
+}
