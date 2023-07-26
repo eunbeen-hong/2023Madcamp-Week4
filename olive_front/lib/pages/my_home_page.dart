@@ -101,10 +101,6 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.developer_mode),
               label: 'Dev Tools',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.developer_mode),
-              label: 'Dev Tools',
             )
           ],
           currentIndex: _selectedIndex,
