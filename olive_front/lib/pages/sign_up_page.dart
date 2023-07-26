@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/my_home_page.dart';
 import 'package:untitled/functions/api_functions.dart';
 import 'package:untitled/functions/user_info.dart';
-import 'package:untitled/pages/sign_up_page.dart';
+import 'package:untitled/pages/login_page.dart';
 
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login Page'),
+        title: Text('Sign Up'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -42,35 +41,25 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                
-                String email = _emailController.text;
-                String password = _passwordController.text;
-
-                userInfo = await getUserInfoFromServer(email, password);
-                if (userInfo != null) {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyHomePage(),
-                    ),
-                  );
-                } else {
-                  print('User not found');
-                }
-              },
-              child: Text('Login'),
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                hintText: 'Username',
+              ),
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                String email = _emailController.text;
+                String password = _passwordController.text;
+                String username = _usernameController.text;
+
+                await signUpUser(email, password, username);
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SignUpPage(),
-                  ),
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                ),
                 );
               },
               child: Text('Sign Up'),

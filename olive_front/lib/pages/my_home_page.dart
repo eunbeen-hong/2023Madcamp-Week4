@@ -1,19 +1,18 @@
 import 'package:untitled/pages/home_page.dart';
-import 'package:untitled/ocr.dart';
+import 'package:untitled/dev/ocr.dart';
 import 'package:untitled/pages/testing_page.dart';
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
 import 'package:untitled/pages/add_book_page.dart';
 
-import 'package:untitled/pages/youtube_test_page.dart';
+import 'package:untitled/dev/youtube_test_page.dart';
 import 'package:untitled/youtubeplayer.dart';
 import 'package:untitled/functions/user_info.dart';
 
 class MyHomePage extends StatefulWidget {
-  final UserInfoDB? userInfo;
   
-  MyHomePage({required this.userInfo, Key? key}) : super(key: key); // Keep this constructor
+  MyHomePage({Key? key}) : super(key: key); // Keep this constructor
 
 
   @override
@@ -21,16 +20,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
   int _selectedIndex = 0;
+ final List<Widget> _widgetOptions = <Widget>[];
 
-  final List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
-    OcrPage(),
-    TestPage(),
-    YoutubePage(),
-    YoutubePlayerPage()
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the list of widgets with the HomePage widget
+    _widgetOptions.add(HomePage());
+    _widgetOptions.add(OcrPage());
+    _widgetOptions.add(TestPage());
+    _widgetOptions.add(YoutubePage());
+    // _widgetOptions.add(YoutubePlayerPage());
+  }
 
   final PageController _pageController = PageController();
 
@@ -94,10 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Profile',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.developer_mode),
-              label: 'Dev Tools',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.developer_mode),

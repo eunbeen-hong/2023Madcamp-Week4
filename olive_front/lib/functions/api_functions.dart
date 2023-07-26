@@ -221,3 +221,58 @@ UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
     books: userBooks,
   );
 }
+
+Future<void> signUpUser(String email, String password, String username) async {
+  try {
+    String urlString = 'http://172.10.5.155/api/create_user';
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> data = {'username': username, 'email': email, 'password': password};
+    String body = jsonEncode(data);
+
+    Uri url = Uri.parse(urlString); // Convert String URL to Uri object
+
+    http.Response response = await http.post(url, headers: headers, body: body);
+
+
+    if (response.statusCode == 200) {
+      // Request successful, parse the response data
+      String responseData = response.body;
+      print('Response data: $responseData');
+    } else {
+      // Request failed, handle the error
+      print('Error: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
+    return null;
+  }
+}
+
+Future<void> addCategory(String categoryName, String userId) async {
+  try {
+    String url = 'http://172.10.5.155/api/add_category';
+
+    Map<String, dynamic> requestBody = {'category_name': categoryName, 'user_id': userId};
+    String requestBodyJson = jsonEncode(requestBody);
+    
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
+
+    if (response.statusCode == 200) {
+      print("Successfully added category to server.");
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      print('Response data: $responseData');
+
+      userInfo!.categories.add(CategoryDB(
+        categoryId: responseData['category_id'],
+        categoryName: categoryName,
+        bookIdList: [],
+      ));
+    } else {
+      print("Failed to add category to server. Status code: ${response.statusCode}");
+    }
+
+  } catch (e) {
+    print("Error adding category to server: $e");
+  }
+}

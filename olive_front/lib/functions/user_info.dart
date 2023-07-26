@@ -68,3 +68,11 @@ class UserInfoDB {
     required this.books
     });
 }
+
+class GlobalData {
+  static UserInfoDB? userInfo;
+}
+
+
+UserInfoDB? get userInfo => GlobalData.userInfo;
+set userInfo(UserInfoDB? value) => GlobalData.userInfo = value;

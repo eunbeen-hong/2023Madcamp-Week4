@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/camera_dialog.dart';
-
-import '../functions/recommend_functions.dart';
+import 'package:untitled/functions/recommend_functions.dart';
 import 'dart:io';
 
 class AddTextPage extends StatefulWidget {
   final List<YoutubeVideoInfo> youtubeInfos;
   final String localPath;
   AddTextPage({Key? key,required this.youtubeInfos, required this.localPath}) : super(key: key);
-
+  
+  
   @override
   _AddTextPageState createState() => _AddTextPageState();
 }
