@@ -6,7 +6,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/result_screen.dart';
-import 'package:untitled/api_functions.dart';
+import 'package:untitled/functions/api_functions.dart';
 
 class OcrPage extends StatefulWidget {
   const OcrPage({super.key});

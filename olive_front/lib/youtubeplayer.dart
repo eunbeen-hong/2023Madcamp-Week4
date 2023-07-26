@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/recommend_functions.dart';
+import 'package:untitled/functions/recommend_functions.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YoutubePlayerPage extends StatefulWidget {

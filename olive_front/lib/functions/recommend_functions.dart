@@ -5,7 +5,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/youtube.dart';
-import 'package:untitled/api_functions.dart';
+import 'package:untitled/functions/api_functions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -150,4 +150,33 @@ Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
   } else {
     throw Exception('Failed to load video titles');
   }
+}
+
+Future<List<YoutubeVideoInfo>> getUrlVideoInfo(List<String> urls) async {
+  List<String> videoIds = await UrlsToYoutubeIds(urls);
+  Map<String, String> videoTitles = await getYoutubeVideoTitles(videoIds);
+
+  List<YoutubeVideoInfo> videoInfoList = [];
+  for (int i = 0; i < urls.length; i++) {
+    String url = urls[i];
+    String videoId = videoIds[i];
+    String? videoTitle = videoTitles[videoId];
+
+    if (url == null || videoId == null || videoTitle == null) {
+      continue;
+    }
+
+    videoInfoList.add(YoutubeVideoInfo(url: url, videoId: videoId, videoTitle: videoTitle));
+  }
+
+  return videoInfoList;
+}
+
+
+class YoutubeVideoInfo {
+  final String url;
+  final String videoId;
+  final String videoTitle;
+
+  YoutubeVideoInfo({required this.url, required this.videoId, required this.videoTitle});
 }
