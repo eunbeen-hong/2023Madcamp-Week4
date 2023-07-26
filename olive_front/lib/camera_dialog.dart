@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/functions/recommend_functions.dart';
 import 'package:untitled/pages/add_text_page.dart';
+import 'package:untitled/pages/camera.dart';
 
 class CameraDialog extends StatefulWidget {
   @override

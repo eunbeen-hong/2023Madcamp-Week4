@@ -162,7 +162,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (context) => AddTextPage(),
+                          builder: (context) => AddTextPage(ids: [],),
                         );
                       },
                       child:Container(

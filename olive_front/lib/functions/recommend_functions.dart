@@ -76,6 +76,68 @@ Future<OCRResult> scanImage() async {
   return OCRResult(songList: [], imageUrl: '');
 }
 
+
+Future<OCRResult> scanImageFromCamera() async {
+  try {
+    final imagePicker = ImagePicker();
+    XFile? xFile = await imagePicker.pickImage(source: ImageSource.camera);
+    if (xFile == null) {
+      print('No image selected.');
+      return OCRResult(songList: [], imageUrl: '');
+    }
+
+    File file = File(xFile.path);
+
+    final inputImage = InputImage.fromFile(file);
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.korean);
+    final recognizedText = await textRecognizer.processImage(inputImage);
+
+    print("ocr_text: $recognizedText.text");
+
+    textRecognizer.close();
+
+    // send image and ocr_text to the server
+    String bookName = "분노의 포도";
+    String author = "존 스타인벡";
+    String ocrResult = recognizedText.text;
+
+    print("sending...");
+    OCRResult result = await sendOCRResult(file, bookName, author, ocrResult);
+
+    // Print the OCRResult
+    print("Received OCR Result:");
+    print("Image URL: ${result.imageUrl}");
+    print("Song List:");
+    for (var song in result.songList) {
+      print("Title: ${song['title']}, Artist: ${song['artist']}");
+    }
+
+    return result;
+  } catch (e) {
+    print('An error occurred when scanning text');
+  }
+
+  return OCRResult(songList: [], imageUrl: '');
+}
+
+Future<List<String>> imageToUrlsFromCamera() async {
+  OCRResult result = await scanImageFromCamera();
+
+  List<String> urls = [];
+  for (var song in result.songList) {
+    String? title = song['title'];
+    String? artist = song['artist'];
+    if (title != null && artist != null) {
+      String? youtubeUrl = await getYouTubeUrl(title, artist);
+      if (youtubeUrl != null) {
+        urls.add(youtubeUrl);
+      }
+    }
+  }
+
+  return urls;
+}
+
 Future<List<String>> imageToUrls() async {
   OCRResult result = await scanImage();
 
