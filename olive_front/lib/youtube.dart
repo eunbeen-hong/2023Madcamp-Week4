@@ -23,6 +23,7 @@ Future<String> getYouTubeUrl(String songTitle, String artist) async {
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
+    print(data);
     if (data['items'] != null && data['items'].length > 0) {
       // 가장 관련성이 높은 동영상의 URL을 반환합니다.
       String videoId = data['items'][0]['id']['videoId'];
@@ -31,6 +32,8 @@ Future<String> getYouTubeUrl(String songTitle, String artist) async {
       return 'No video found';
     }
   } else {
-    throw Exception('Failed to load video');
+    // FIXME
+    // throw Exception('Failed to load video');
+      return 'https://www.youtube.com/watch?v=IGQbgkNFMhk';
   }
 }

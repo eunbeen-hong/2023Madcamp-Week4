@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:untitled/camera_dialog.dart';
 
 import '../functions/recommend_functions.dart';
+import 'dart:io';
 
 class AddTextPage extends StatefulWidget {
   final List<YoutubeVideoInfo> youtubeInfos;
-  AddTextPage({Key? key,required this.youtubeInfos, required String localPath}) : super(key: key);
+  final String localPath;
+  AddTextPage({Key? key,required this.youtubeInfos, required this.localPath}) : super(key: key);
 
   @override
   _AddTextPageState createState() => _AddTextPageState();
@@ -16,12 +18,13 @@ class _AddTextPageState extends State<AddTextPage> {
   List<String>? songNames;
   late List<bool> isSelected;
 
-
   @override
   void initState() {
     super.initState();
     songNames = widget.youtubeInfos.map((info) =>
-    info.videoTitle.length > 20 ? info.videoTitle.substring(0, 20) + '...' : info.videoTitle
+    info.videoTitle.length > 20
+        ? info.videoTitle.substring(0, 20) + '...'
+        : info.videoTitle
     ).toList();
     isSelected = List<bool>.filled(songNames!.length, false);
   }
@@ -31,10 +34,10 @@ class _AddTextPageState extends State<AddTextPage> {
       counter++;
     });
   }
+
   Widget buildSongItem(int index) {
     String songName = songNames![index];
     return ListTile(
-      //leading: Icon(Icons.music_note),
       title: Text(songName),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -46,7 +49,7 @@ class _AddTextPageState extends State<AddTextPage> {
           ),
           IconButton(
             icon: Icon(Icons.add),
-            color: isSelected[index] ? Colors.grey : Colors.black, // 변경된 부분
+            color: isSelected[index] ? Colors.grey : Colors.black,
             onPressed: () {
               setState(() {
                 isSelected[index] = !isSelected[index];
@@ -57,8 +60,11 @@ class _AddTextPageState extends State<AddTextPage> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
+    final fileExists = File(widget.localPath).existsSync();
+    print("songNames:$songNames");
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -121,36 +127,43 @@ class _AddTextPageState extends State<AddTextPage> {
               ),
               SizedBox(height: 16.0),
               Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  elevation: 4,
-                  child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => CameraDialog(),
-                        );
-                      },
-                      child: Container(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                elevation: 4,
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => CameraDialog(),
+                    );
+                  },
+                  child: Container(
+                    height: 300,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: fileExists
+                          ? Image.file(
+                        File(widget.localPath),
+                        fit: BoxFit.cover,  // or BoxFit.fill
                         height: 300,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Icon(Icons.add, size: 100),
-                        ),
-                      ),
+                        width: double.infinity,
+                      )
+                          : Icon(Icons.add, size: 100),
+                    ),
                   ),
+                ),
               ),
               SizedBox(height: 16),
               Container(
@@ -171,32 +184,42 @@ class _AddTextPageState extends State<AddTextPage> {
                   ),
                 ),
               ),
-              if (songNames != null)
-                Column(
-                  children: [
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      elevation: 4,
-                      child: Container(
-                        width: double.infinity,
-                        height: 320,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.0),
-                          color: Color(0xffffffff),
-                        ),
-                        child: ListView.builder(
-                          itemCount: songNames!.length,
-                          itemBuilder: (context, index) {
-                            return buildSongItem(index);
-                          },
-                        ),
-                      ),
+              Column(
+                children: [
+                  if (counter != 0) SizedBox(height: 16),
+                ],
+              ),
+              Column(
+                children: [
+                  if(counter != 0)
+                    Column(
+                      children: [
+                        if (songNames != null)
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            elevation: 4,
+                            child: Container(
+                              width: double.infinity,
+                              height: 320,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                                color: Color(0xffffffff),
+                              ),
+                              child: ListView.builder(
+                                itemCount: songNames!.length,
+                                itemBuilder: (context, index) {
+                                  return buildSongItem(index);
+                                },
+                              ),
+                            ),
+                          ),
+                        SizedBox(height: 16),
+                      ],
                     ),
-                    SizedBox(height: 16),
-                  ],
-                ),
+                ],
+              ),
             ],
           ),
         ),
@@ -204,3 +227,4 @@ class _AddTextPageState extends State<AddTextPage> {
     );
   }
 }
+

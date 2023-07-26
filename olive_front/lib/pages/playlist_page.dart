@@ -17,6 +17,7 @@ class PlaylistPage extends StatefulWidget {
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {
+  int counter = 0;
   Book _book = Book(
     title: '데미안',
     coverImage:
@@ -57,6 +58,11 @@ class _PlaylistPageState extends State<PlaylistPage> {
         ],
       ),
     );
+  }
+  void incrementCounter() {
+    setState(() {
+      counter++;
+    });
   }
 
   @override
@@ -194,9 +200,10 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     SizedBox(height: 16.0),
                     GestureDetector(
                       onTap: () {
+                        incrementCounter();
                         showDialog(
                           context: context,
-                          builder: (context) => AddTextPage(youtubeInfos: []),
+                          builder: (context) => AddTextPage(youtubeInfos: [], localPath: ""),
                         );
                       },
                       child:Container(
@@ -226,6 +233,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 16.0),
                     Column(
                       children: [
                         Card(
