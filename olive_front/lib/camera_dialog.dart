@@ -8,10 +8,10 @@ class CameraDialog extends StatefulWidget {
 }
 
 class _CameraDialogState extends State<CameraDialog> {
-  Future<List<String>> getIdsFromGallery() async {
+  Future<List<YoutubeVideoInfo>> getIdsFromGallery() async {
     List<String> urls = await imageToUrls();
-    List<String> ids = await UrlsToYoutubeIds(urls);
-    return ids;
+    List<YoutubeVideoInfo> youtubeInfos = await getUrlVideoInfo(urls);
+    return youtubeInfos;
   }
 
   @override
@@ -26,20 +26,21 @@ class _CameraDialogState extends State<CameraDialog> {
             title: const Text('카메라'),
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CameraPage()),
-              );
+              //Navigator.push(
+                //context,
+                //MaterialPageRoute(builder: (context) => CameraPage()),
+              //);
             },
           ),
           ListTile(
             title: const Text('사진첩'),
             onTap: () async {
-              List<String> ids = await getIdsFromGallery();
+
+              List<YoutubeVideoInfo> youtubeInfos = await getIdsFromGallery();
               Navigator.of(context).pop();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddTextPage(ids: ids)),
+                MaterialPageRoute(builder: (context) => AddTextPage(youtubeInfos: youtubeInfos)),
               );
             },
           ),
