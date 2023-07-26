@@ -198,10 +198,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
                       showDialog(
                         context: context,
                         builder: (context) => AddTextPage(
-                          bookId: widget.book.bookId,
+                          book: widget.book,
                           youtubeInfos: [],
                           localPath: '',
-                          book: widget.book,
                         ),
                       );
                     },
