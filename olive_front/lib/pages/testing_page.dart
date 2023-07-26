@@ -60,7 +60,7 @@ class _TestPageState extends State<TestPage> {
                 String password = 'qwerty1234';
                 UserInfoDB? userInfo = await getUserInfoFromServer(email, password);
                 print('Received user info from server:');
-                printUserInfoDB(userInfo);
+                // printUserInfoDB(userInfo);
                 setState(() {
                   _userInfo = userInfo;
                 });

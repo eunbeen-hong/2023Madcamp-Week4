@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 UserInfoDB? userInfo = await getUserInfoFromServer(email, password);
                 if (userInfo != null) {
-                  printUserInfoDB(userInfo);
+                  // printUserInfoDB(userInfo);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

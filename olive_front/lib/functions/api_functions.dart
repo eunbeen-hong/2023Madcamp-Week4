@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io'; // not supported in mobile platforms
+import 'package:untitled/functions/user_info.dart';
 
 class OCRResult {
   final List<Map<String, String>> songList;
@@ -140,25 +141,85 @@ Future<void> sendText(String text) async {
   }
 }
 
-
-
-Future<Map<String, dynamic>> getUserInfoFromServer(String uid) async {
+Future<UserInfoDB?> getUserInfoFromServer(String email, String password) async {
   try {
-    String urlString = 'http://172.10.5.155/api/get_user_info/$uid';
+    print("Fetching user info from server...");
+    String urlString = 'http://172.10.5.155/api/get_user_info/$email/$password';
     Uri url = Uri.parse(urlString);
 
     http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
+      print("Successfully fetched user info from server.");
       Map<String, dynamic> responseData = jsonDecode(response.body);
-      return responseData;
+
+      print('Response data: $responseData');
+
+      UserInfoDB? user = parseUserInfo(responseData);
+
+      return user;
     } else {
-      // If the server returned an error, return an empty map
-      return {};
+      return null;
     }
   } catch (e) {
     print('Error: $e');
     // If an error occurred, return an empty map
-    return {};
+    return null;
   }
+}
+
+UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
+  Map<String, dynamic> userData = responseData['user_data'];
+  List<CategoryDB> userCategories = [];
+  if (userData['categories'] != null) {
+    for (var categoryId in userData['categories'].keys) {
+      var category = userData['categories'][categoryId];
+      userCategories.add(CategoryDB(
+        categoryId: categoryId,
+        categoryName: category['category_name'] ?? '',
+        bookIdList: List<String>.from(category['books'] ?? []),
+      ));
+    }
+  }
+  print("user category parsed");
+
+  List<BookDB> userBooks = [];
+  if (userData['books'] != null) {
+    for (var bookId in userData['books'].keys) {
+      var book = userData['books'][bookId];
+      List<ImageDB> bookImages = [];
+      for (var image in book['images']) {
+        List<SongDB> imageSongs = [];
+        for (var song in image['songs']) {
+          imageSongs.add(SongDB(
+            title: song['title'],
+            songUrl: song['url'],
+          ));
+        }
+        bookImages.add(ImageDB(
+          imageUrl: image['url'],
+          songs: imageSongs,
+        ));
+      }
+      userBooks.add(BookDB(
+        bookId: bookId,
+        title: book['title'] ?? '',
+        author: book['author'] ?? '',
+        last_accessed: book['last_accessed'] ?? '',
+        bookDesc: book['book_desc'] ?? '',
+        images: bookImages,
+      ));
+    }
+  }
+
+  print("user book parsed");
+
+  return UserInfoDB(
+    userid: userData['uid'],
+    username: userData['username'],
+    email: userData['email'],
+    password: userData['password'],
+    categories: userCategories,
+    books: userBooks,
+  );
 }
