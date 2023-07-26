@@ -31,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _widgetOptions.add(OcrPage());
     _widgetOptions.add(TestPage());
     _widgetOptions.add(YoutubePage());
-    _widgetOptions.add(YoutubePlayerPage());
+    // _widgetOptions.add(YoutubePlayerPage());
   }
 
   final PageController _pageController = PageController();

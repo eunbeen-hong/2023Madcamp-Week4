@@ -153,29 +153,23 @@ class HomePage extends StatelessWidget {
                         color: Color(0xffffffff),
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          // itemCount: entries[index].length - 1, // 제목을 제외한 나머지 항목 수
                           itemCount: userInfo!.categories[index].bookIdList.length,
                           itemBuilder: (BuildContext context, int hIndex) {
-                            // String name = entries[index][hIndex + 1]; // 제목을 제외하고 가져옴
                             String bookId = userInfo!.categories[index].bookIdList[hIndex];
-                            String name = '';
-                            userInfo!.books.forEach((book) {
-                              if (book.bookId == bookId) {
-                                name = book.title;
-                              }
-                            });
-                            return GestureDetector( // 아이템에 GestureDetector를 적용하여 클릭 이벤트를 감지합니다.
+                            BookDB? book = userInfo!.books.firstWhere((b) => b.bookId == bookId);
+                            String bookName = book?.title ?? ''; // Use the null-aware operator (?.) to safely access the title property.
+                            return GestureDetector( 
                                 onTap: () {
-                                  Navigator.push( // 클릭 시, Navigator를 이용하여 AddBookPage로 이동합니다.
+                                  Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => PlaylistPage()), // 이동하면서 'name'을 파라미터로 전달합니다.
+                                    MaterialPageRoute(builder: (context) => PlaylistPage(book: book)), 
                                   );
                                 },
                                 child: Container(
                                   width: 160,
                                   color: Colors.transparent,
                                   child: Center(
-                                    child: Text(name),
+                                    child: Text(bookName),
                                   ),
                                 ),
                             );

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/functions/recommend_functions.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:untitled/functions/user_info.dart';
 
 class YoutubePlayerPage extends StatefulWidget {
+  final SongDB song;
+  YoutubePlayerPage({required this.song, Key? key}) : super(key: key);
+
   @override
   _YoutubePlayerPageState createState() => _YoutubePlayerPageState();
 }
@@ -14,10 +18,7 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   int _currentIndex = 0;
 
   Future<void> _loadIds() async {
-    Map<String, dynamic> rst = await imageToUrls();
-    List<String> urls = rst['urls'];
-    _ids = await UrlsToYoutubeIds(urls);
-    _controller.load(_ids[_currentIndex]);
+    _controller.load(widget.song.songId);
   }
 
   void _playNext() {

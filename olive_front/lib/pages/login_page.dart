@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 userInfo = await getUserInfoFromServer(email, password);
                 if (userInfo != null) {
-                  // printUserInfoDB(userInfo);
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
