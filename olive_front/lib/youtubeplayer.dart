@@ -77,112 +77,97 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: null,
-      body: YoutubePlayerBuilder(
-        player: YoutubePlayer(
-          controller: _controller,
-          showVideoProgressIndicator: false,
-        ),
-        builder: (context, player) {
-          return Stack(
-            children: [
-              Container(
-                height: screenHeight,
-                child: player,
-              ),
-              Center(
-                child: Container(
-                  width: 200.0,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/example.jpg'),
-                      fit:BoxFit.cover,
-                    )
-                  ),
-                )
-
-              ),
-              Positioned(
-                bottom: 16.0,
-                left: 16.0,
-                right: 16.0,
-                child: Column(
-                  children: [
-                    // 버튼들
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ProgressBar(
-                            controller: _controller,
-                            isExpanded: true,
-                          ),
-                        ),
-                      ],
+      body: GestureDetector(
+        onVerticalDragEnd: (details) {
+          if(details.primaryVelocity! > 0) { // When drag down
+            Navigator.pop(context);
+          }
+        },
+        child: YoutubePlayerBuilder(
+          player: YoutubePlayer(
+            controller: _controller,
+            showVideoProgressIndicator: false,
+          ),
+          builder: (context, player) {
+            return Stack(
+              children: [
+                Container(
+                  height: screenHeight,
+                  child: player,
+                ),
+                Center(
+                  child: Container(
+                    width: 200.0,
+                    height: 200.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/example.jpg'),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          onPressed:
-                              _playPrevious, // You will need to implement _playPrevious
-                          icon: Icon(Icons.skip_previous),
-                          iconSize: 48.0, // Set the icon size as desired
-                        ),
-                        IconButton(
-                          onPressed: _controller.value.isPlaying
-                              ? _controller.pause
-                              : _controller.play,
-                          icon: Icon(
-                            _controller.value.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow,
+                  ),
+                ),
+                Positioned(
+                  top: 16.0,
+                  right: 16.0,
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.close),
+                    iconSize: 30.0,
+                  ),
+                ),
+                Positioned(
+                  bottom: 16.0,
+                  left: 16.0,
+                  right: 16.0,
+                  child: Column(
+                    children: [
+                      // Buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ProgressBar(
+                              controller: _controller,
+                              isExpanded: true,
+                            ),
                           ),
-                          iconSize: 48.0, // Set the icon size as desired
-                        ),
-                        IconButton(
-                          onPressed: _playNext,
-                          icon: Icon(Icons.skip_next),
-                          iconSize: 48.0, // Set the icon size as desired
-                        ),
-                      ],
-                    ), // closing the IconButton Row
-                  ], // closing the Column
-                ), // closing the Positioned
-              )
-            ], // closing the Stack
-          ); // closing the return
-        }, // closing the builder
-      ), // closing the YoutubePlayerBuilder
-    ); // closing the Scaffold
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: _playPrevious,
+                            icon: Icon(Icons.skip_previous),
+                            iconSize: 48.0,
+                          ),
+                          IconButton(
+                            onPressed: _controller.value.isPlaying
+                                ? _controller.pause
+                                : _controller.play,
+                            icon: Icon(
+                              _controller.value.isPlaying
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                            ),
+                            iconSize: 48.0,
+                          ),
+                          IconButton(
+                            onPressed: _playNext,
+                            icon: Icon(Icons.skip_next),
+                            iconSize: 48.0,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
+
 }
-
-
-                  
-
-
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      // children: [
-                      //   IconButton(
-                      //     onPressed: _controller.value.isPlaying
-                      //         ? _controller.pause
-                      //         : _controller.play,
-                      //     icon: Icon(
-                      //       _controller.value.isPlaying
-                      //           ? Icons.pause
-                      //           : Icons.play_arrow,
-                      //     ),
-                      //   ),
-
-                      //   IconButton(
-                      //     onPressed: _playNext,
-                      //     icon: Icon(Icons.skip_next),
-                      //   ),
-
-                      //   // Progress Bar
-                      //   Expanded(
-                      //     child: ProgressBar(
-                      //       controller: _controller,
-                      //       isExpanded: true,
