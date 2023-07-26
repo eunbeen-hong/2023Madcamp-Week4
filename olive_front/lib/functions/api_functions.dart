@@ -194,6 +194,7 @@ UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
           imageSongs.add(SongDB(
             title: song['title'],
             songUrl: song['url'],
+            songId: song['song_id'],
           ));
         }
         bookImages.add(ImageDB(

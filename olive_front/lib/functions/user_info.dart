@@ -13,10 +13,12 @@ class CategoryDB {
 class SongDB {
   final String title;
   final String songUrl;
+  final String songId;
 
   SongDB({
     required this.title, 
-    required this.songUrl
+    required this.songUrl,
+    required this.songId
     });
 }
 
