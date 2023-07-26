@@ -221,12 +221,25 @@ class _AddTextPageState extends State<AddTextPage> {
                       elevation: 4,
                       child: GestureDetector(
                         onTap: () {
+                          List<SongDB> songs = [];
+
+                          // TODO: 노래 하나도 선택 안되었으면 완료버튼 눌리면 안됨 (서버측 에러)
+                          
+                          for (var v in widget.youtubeInfos) {
+                            if (isSelected[widget.youtubeInfos.indexOf(v)]) {
+                              songs.add(SongDB(title: v.videoTitle, songUrl: v.url, songId: v.videoId));
+                            }
+                          }
+                          addImageAndSongs(widget.book.bookId, File(widget.localPath), songs);
+
+                          BookDB updatedBook = userInfo!.books.firstWhere((book) => book.bookId == widget.book.bookId);
+
                           Navigator.pop(context);
                           showDialog(
                             context: context,
-                            builder: (context) => PlaylistPage(book: widget.book),
+                            builder: (context) => PlaylistPage(book: updatedBook),
                           );
-                          incrementCounter();
+                          
                         },
                         child: Container(
                           width: double.infinity,
@@ -249,26 +262,6 @@ class _AddTextPageState extends State<AddTextPage> {
                       ),
                     ),
                 ],
-              ),
-               ElevatedButton(
-                onPressed: () {
-                  List<SongDB> songs = [];
-
-                  // FIXME: remove this after making selecting songs
-                  isSelected = List<bool>.filled(songNames!.length, true);
-
-                  // TODO: 노래 하나도 선택 안되었으면 완료버튼 눌리면 안됨 (서버측 에러)
-                  
-                  for (var v in widget.youtubeInfos) {
-                    if (isSelected[widget.youtubeInfos.indexOf(v)]) {
-                      songs.add(SongDB(title: v.videoTitle, songUrl: v.url, songId: v.videoId));
-                    }
-                  }
-                  addImageAndSongs(widget.book.bookId, File(widget.localPath), songs);
-                  
-                  Navigator.pop(context);
-                },
-                child: Text('완료'),
               ),
             ],
           ),

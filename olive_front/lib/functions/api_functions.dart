@@ -62,6 +62,10 @@ Future<void> addImageAndSongs(String bookId, File image, List<SongDB> songs) asy
       // Handle the response
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       print("Successfully added image and songs to server. Response data: $jsonResponse");
+      userInfo!.books.firstWhere((book) => book.bookId == bookId).images.add(ImageDB(
+        imageUrl: jsonResponse['image_url'],
+        songs: songs,
+      ));
     } else {
       print("Failed to add image and songs to server. Status code: ${response.statusCode}");
     }
@@ -216,13 +220,13 @@ UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
         List<SongDB> imageSongs = [];
         for (var song in image['songs']) {
           imageSongs.add(SongDB(
-            title: song['title'],
-            songUrl: song['url'],
-            songId: song['song_id'],
+            title: song['title'] ?? '',
+            songUrl: song['url'] ?? '',
+            songId: song['song_id'] ?? '',
           ));
         }
         bookImages.add(ImageDB(
-          imageUrl: image['url'],
+          imageUrl: image['url'] ?? '',
           songs: imageSongs,
         ));
       }
