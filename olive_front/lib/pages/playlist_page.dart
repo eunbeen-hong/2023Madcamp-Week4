@@ -15,6 +15,7 @@ class PlaylistPage extends StatefulWidget {
 class _PlaylistPageState extends State<PlaylistPage> {
 
   List<SongDB> songList = [];
+  int counter = 0;
   
   @override
   void initState() {
@@ -191,11 +192,13 @@ class _PlaylistPageState extends State<PlaylistPage> {
                   SizedBox(height: 16.0),
                   GestureDetector(
                     onTap: () {
+                      Navigator.pop(context);
                       showDialog(
                         context: context,
                         builder: (context) => AddTextPage(
                           youtubeInfos: [],
                           localPath: '',
+                          book: widget.book,
                         ),
                       );
                     },
@@ -227,28 +230,21 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     ),
                   ),
                   SizedBox(height: 16.0),
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AddTextPage(youtubeInfos: [], localPath: ""),
-                      );
-                    },
-                    child:Card(
-                      elevation: 4,
-                      child: Container(
-                        width: double.infinity,
-                        height: 320,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.0),
-                          color: Color(0xffffffff),
-                        ),
-                        child: ListView.builder(
-                          itemCount: songList.length,
-                          itemBuilder: (context, index) {
-                            return buildSongItem(index);
-                          },
-                        ),
+                  Card(
+                    elevation: 4,
+                    child: Container(
+                      width: double.infinity,
+                      height: songList.length*60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: Color(0xffffffff),
+                      ),
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(), // 이 부분을 추가해주시면 됩니다.
+                        itemCount: songList.length,
+                        itemBuilder: (context, index) {
+                          return buildSongItem(index);
+                        },
                       ),
                     ),
                   ),
