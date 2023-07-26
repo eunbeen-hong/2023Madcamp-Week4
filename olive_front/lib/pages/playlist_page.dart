@@ -1,41 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/add_text_page.dart';
 import 'package:untitled/youtubeplayer.dart';
+import 'package:untitled/functions/user_info.dart';
 
-class Book {
-  final String title;
-  final String coverImage;
-  final String author;
-
-  Book({required this.title, required this.coverImage, required this.author});
-}
 
 class PlaylistPage extends StatefulWidget {
-  PlaylistPage({Key? key}) : super(key: key);
+  final BookDB book;
+  PlaylistPage({required this.book, Key? key}) : super(key: key);
 
   @override
   _PlaylistPageState createState() => _PlaylistPageState();
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {
-  Book _book = Book(
-    title: '데미안',
-    coverImage:
-        'https://shopping-phinf.pstatic.net/main_3249260/32492609895.20230725120808.jpg?type=w300',
-    author: 'Author 1',
-  );
-  String bookTitle = "데미안";
-
-  List<String> songNames = [
-    'Song 1',
-    'Song 2',
-    'Song 3',
-    'Song 4',
-    'Song 5',
-  ];
+  List<SongDB> songList = [];
+  
+  @override
+  void initState() {
+    super.initState();
+    for (var image in widget.book.images) {
+      songList.addAll(image.songs);
+    }
+  }
 
   Widget buildSongItem(int index) {
-    String songName = songNames[index];
+    String songName = songList[index].title;
     return ListTile(
       leading: Icon(Icons.music_note),
       title: Text(songName),
@@ -47,7 +36,12 @@ class _PlaylistPageState extends State<PlaylistPage> {
           IconButton(
             icon: Icon(Icons.play_arrow),
             onPressed: () {
-              YoutubePlayerPage;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => YoutubePlayerPage(song: songList[index]),
+                ),
+              );
             },
           ),
         ],
@@ -65,7 +59,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
             Image.asset('assets/olive_icon.png', width: 30, height: 30),
             SizedBox(width: 4),
             Text(
-              "$bookTitle Playlist",
+              "${widget.book.title} Playlist",
               style: TextStyle(color: Colors.white),
             ),
           ],
@@ -128,7 +122,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                                     ),
                                   ],
                                 ),
-                                child: Image.network(_book.coverImage,
+                                child: Image.network(widget.book.images[0].imageUrl,
                                     fit: BoxFit.cover),
                               ),
                               SizedBox(width: 16),
@@ -137,7 +131,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      _book.title,
+                                      widget.book.title,
                                       style: TextStyle(
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.bold,
@@ -145,7 +139,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                                       ),
                                     ),
                                     Text(
-                                      _book.author,
+                                      widget.book.author,
                                       style: TextStyle(
                                         fontSize: 16.0,
                                         color: Colors.black,
@@ -225,39 +219,35 @@ class _PlaylistPageState extends State<PlaylistPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 16.0),
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AddTextPage(youtubeInfos: [], localPath: ""),
-                        );
-                      },
-                      child:Container(
+                  ),
+                  SizedBox(height: 16.0),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AddTextPage(youtubeInfos: [], localPath: ""),
+                      );
+                    },
+                    child:Card(
+                      elevation: 4,
+                      child: Container(
                         width: double.infinity,
-                        height: 40,
+                        height: 320,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16.0),
+                          color: Color(0xffffffff),
                         ),
-                        elevation: 4,
-                        child: Container(
-                          width: double.infinity,
-                          height: 320,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16.0),
-                            color: Color(0xffffffff),
-                          ),
-                          child: ListView.builder(
-                            itemCount: songNames.length,
-                            itemBuilder: (context, index) {
-                              return buildSongItem(index);
-                            },
-                          ),
+                        child: ListView.builder(
+                          itemCount: songList.length,
+                          itemBuilder: (context, index) {
+                            return buildSongItem(index);
+                          },
                         ),
                       ),
-                      SizedBox(height: 16),
-                    ],
+                    ),
                   ),
+                  SizedBox(height: 16),
+                  
                 ],
               ),
             ),
