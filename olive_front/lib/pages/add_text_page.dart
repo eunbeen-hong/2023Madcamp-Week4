@@ -4,7 +4,7 @@ import 'package:untitled/functions/recommend_functions.dart';
 
 class AddTextPage extends StatefulWidget {
   final List<YoutubeVideoInfo> youtubeInfos;
-  AddTextPage({Key? key,required this.youtubeInfos, required String localPath}) : super(key: key);
+  AddTextPage({Key? key, required this.youtubeInfos, required String localPath}) : super(key: key);
 
   @override
   _AddTextPageState createState() => _AddTextPageState();

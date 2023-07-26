@@ -225,11 +225,18 @@ class _PlaylistPageState extends State<PlaylistPage> {
                         ),
                       ),
                     ),
-                  ),
-                  Column(
-                    children: [
-                      Card(
-                        shape: RoundedRectangleBorder(
+                    SizedBox(height: 16.0),
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AddTextPage(youtubeInfos: [], localPath: ""),
+                        );
+                      },
+                      child:Container(
+                        width: double.infinity,
+                        height: 40,
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                         elevation: 4,
