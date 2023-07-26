@@ -178,5 +178,5 @@ class YoutubeVideoInfo {
   final String videoId;
   final String videoTitle;
 
-  YoutubeVideoInfo(this.url, this.videoId, this.videoTitle);
+  YoutubeVideoInfo({required this.url, required this.videoId, required this.videoTitle});
 }
