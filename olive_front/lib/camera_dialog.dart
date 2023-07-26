@@ -30,10 +30,10 @@ class _CameraDialogState extends State<CameraDialog> {
             title: const Text('카메라'),
             onTap: () {
               Navigator.of(context).pop();
-              //Navigator.push(
-                //context,
-                //MaterialPageRoute(builder: (context) => CameraPage()),
-              //);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CameraPage()),
+              );
             },
           ),
           ListTile(

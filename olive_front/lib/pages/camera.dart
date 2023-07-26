@@ -33,7 +33,8 @@ class _CameraPageState extends State<CameraPage> {
       textRecognizer.close();
 
       File imageFile = File(pickedFile.path);
-      List<String> urls = await imageToUrlsFromCamera();
+      Map<String, dynamic> rst = await imageToUrlsFromCamera();
+      List<String> urls = rst['urls'];
       await getUrlVideoInfo(urls);
     } else {
       print('No image selected.');
