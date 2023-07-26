@@ -8,6 +8,7 @@ import 'package:untitled/youtube.dart';
 import 'package:untitled/functions/api_functions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/services.dart';
 
 Future<OCRResult> scanImage() async {
   // // check if the camera is available
@@ -119,14 +120,13 @@ String? _extractVideoIdFromUrl(String url) {
 Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
   String apiKey;
   try {
-    File apiKeyFile = File('secret/youtube_api_key.json');
-    String apiKeyJson = await apiKeyFile.readAsString();
+    String apiKeyJson =
+        await rootBundle.loadString('secret/youtube_api_key.json');
     Map<String, dynamic> apiKeyData = json.decode(apiKeyJson);
     apiKey = apiKeyData['youtube_api_key'];
   } catch (e) {
     throw Exception('Failed to read YouTube API key: $e');
   }
-
   String baseUrl = 'https://www.googleapis.com/youtube/v3/videos';
   String videoIdQuery = videoIds.join(',');
 
@@ -151,4 +151,3 @@ Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
     throw Exception('Failed to load video titles');
   }
 }
-

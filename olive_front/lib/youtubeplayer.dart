@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/recommend_functions.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YoutubePlayerPage extends StatefulWidget {
@@ -9,6 +10,27 @@ class YoutubePlayerPage extends StatefulWidget {
 class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   late YoutubePlayerController _controller;
   late TextEditingController _idController;
+  late List<String> _ids;
+  int _currentIndex = 0;
+
+  Future<void> _loadIds() async {
+    List<String> urls = await imageToUrls();
+    _ids = await UrlsToYoutubeIds(urls);
+    _controller.load(_ids[_currentIndex]);
+  }
+
+  void _playNext() {
+    setState(() {
+      _currentIndex++;
+      if (_currentIndex < _ids.length) {
+        _controller.load(_ids[_currentIndex]);
+      } else {
+        _currentIndex =
+            0; // If we reach the end of the list, restart from the first video.
+        _controller.load(_ids[_currentIndex]);
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -33,38 +55,6 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
     _controller.dispose();
     _idController.dispose();
     super.dispose();
-  }
-
-  void _playYoutubeVideoFromUrl() {
-    // 사용자가 입력한 URL에서 비디오 ID를 추출합니다.
-    var videoId = YoutubePlayer.convertUrlToId(_idController.text) ?? '';
-    if (videoId.isNotEmpty) {
-      // 추출한 비디오 ID로 플레이어를 업데이트합니다.
-      _controller.load(videoId);
-    } else {
-      // 비디오 ID가 비어있을 경우, 스낵바를 표시합니다.
-      _showSnackBar('Invalid YouTube URL');
-    }
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontWeight: FontWeight.w300,
-            fontSize: 16.0,
-          ),
-        ),
-        behavior: SnackBarBehavior.floating,
-        elevation: 1.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50.0),
-        ),
-      ),
-    );
   }
 
   @override
@@ -101,6 +91,11 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                     ),
                   ),
 
+                  IconButton(
+                    onPressed: _playNext,
+                    icon: Icon(Icons.skip_next),
+                  ),
+
                   // Progress Bar
                   Expanded(
                     child: ProgressBar(
@@ -108,23 +103,24 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                       isExpanded: true,
                     ),
                   ),
+
+                  // "Load Videos" 버튼 추가
+                  ElevatedButton(
+                    onPressed: _loadIds,
+                    child: const Text('Load Videos'),
+                  ),
                 ],
               ),
 
-              const SizedBox(height: 16.0),
-
-              // URL 입력 필드와 Play 버튼
-              TextField(
-                controller: _idController,
-                decoration: InputDecoration(
-                  labelText: 'Enter YouTube URL',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: _playYoutubeVideoFromUrl,
-                child: const Text('Play Video'),
+                onPressed: () async {
+                  List<String> urls = await imageToUrls();
+                  List<String> ids = await UrlsToYoutubeIds(urls);
+
+                  // 이제 ids를 사용할 수 있습니다.
+                  // 여기에 ids를 사용하는 코드를 작성하십시오.
+                },
+                child: const Text('test function'),
               ),
             ],
           );

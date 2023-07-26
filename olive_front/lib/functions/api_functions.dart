@@ -2,7 +2,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io'; // not supported in mobile platforms
-import 'package:untitled/functions/user_info.dart';
 
 class OCRResult {
   final List<Map<String, String>> songList;
@@ -141,133 +140,25 @@ Future<void> sendText(String text) async {
   }
 }
 
-Future<UserInfoDB?> getUserInfoFromServer(String email, String password) async {
+
+
+Future<Map<String, dynamic>> getUserInfoFromServer(String uid) async {
   try {
-    print("Fetching user info from server...");
-    String urlString = 'http://172.10.5.155/api/get_user_info/$email/$password';
+    String urlString = 'http://172.10.5.155/api/get_user_info/$uid';
     Uri url = Uri.parse(urlString);
 
     http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
-      print("Successfully fetched user info from server.");
       Map<String, dynamic> responseData = jsonDecode(response.body);
-
-      print('Response data: $responseData');
-
-      UserInfoDB user = parseUserInfo(responseData);
-
-      return user;
+      return responseData;
     } else {
-      return null;
+      // If the server returned an error, return an empty map
+      return {};
     }
   } catch (e) {
     print('Error: $e');
     // If an error occurred, return an empty map
-    return UserInfoDB(
-        userid: '',
-        username: '',
-        email: '',
-        password: '',
-        categories: [],
-        books: [],
-      );
+    return {};
   }
-}
-
-UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
-  Map<String, dynamic> userData = responseData['user_data'];
-  List<CategoryDB> userCategories = [];
-  if (userData['categories'] != null) {
-    for (var categoryId in userData['categories'].keys) {
-      var category = userData['categories'][categoryId];
-      userCategories.add(CategoryDB(
-        categoryId: categoryId,
-        categoryName: category['category_name'] ?? '',
-        bookIdList: List<String>.from(category['books'] ?? []),
-      ));
-    }
-  }
-  print("user category parsed");
-
-  List<BookDB> userBooks = [];
-  if (userData['books'] != null) {
-    for (var bookId in userData['books'].keys) {
-      var book = userData['books'][bookId];
-      List<ImageDB> bookImages = [];
-      for (var image in book['images']) {
-        List<SongDB> imageSongs = [];
-        for (var song in image['songs']) {
-          imageSongs.add(SongDB(
-            title: song['title'],
-            songUrl: song['url'],
-          ));
-        }
-        bookImages.add(ImageDB(
-          imageUrl: image['url'],
-          songs: imageSongs,
-        ));
-      }
-      userBooks.add(BookDB(
-        bookId: bookId,
-        title: book['title'] ?? '',
-        author: book['author'] ?? '',
-        last_accessed: book['last_accessed'] ?? '',
-        bookDesc: book['book_desc'] ?? '',
-        images: bookImages,
-      ));
-    }
-  }
-
-  print("user book parsed");
-
-  return UserInfoDB(
-    userid: userData['uid'],
-    username: userData['username'],
-    email: userData['email'],
-    password: userData['password'],
-    categories: userCategories,
-    books: userBooks,
-  );
-}
-
-
-void printUserInfoDB(UserInfoDB? userInfo) {
-  if (userInfo == null) {
-    return;
-  }
-  
-  // Printing UserInfoDB using the print() function
-  print("User ID: ${userInfo.userid}");
-  print("Username: ${userInfo.username}");
-  print("Email: ${userInfo.email}");
-  print("Password: ${userInfo.password}");
-
-  print("Categories:");
-  for (var category in userInfo.categories) {
-    print("Category ID: ${category.categoryId}");
-    print("Category Name: ${category.categoryName}");
-    print("Book IDs in this category: ${category.bookIdList}");
-  }
-
-  print("Books:");
-  for (var book in userInfo.books) {
-    print("Book ID: ${book.bookId}");
-    print("Title: ${book.title}");
-    print("Author: ${book.author}");
-    print("Last Accessed: ${book.last_accessed}");
-    print("Description: ${book.bookDesc}");
-
-    print("Images:");
-    for (var image in book.images) {
-      print("Image URL: ${image.imageUrl}");
-
-      print("Songs:");
-      for (var song in image.songs) {
-        print("Title: ${song.title}");
-        print("Song URL: ${song.songUrl}");
-      }
-    }
-  }
-
 }
