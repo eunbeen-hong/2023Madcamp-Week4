@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/camera_dialog.dart';
 import 'package:untitled/functions/recommend_functions.dart';
+import 'package:untitled/functions/api_functions.dart';
 import 'package:untitled/functions/user_info.dart';
 import 'dart:io';
 
 import 'package:untitled/pages/playlist_page.dart';
 
 class AddTextPage extends StatefulWidget {
+  final String bookId;
   final List<YoutubeVideoInfo> youtubeInfos;
   final String localPath;
-
-  final BookDB book;
-  AddTextPage({Key? key,required this.youtubeInfos, required this.localPath, required this.book}) : super(key: key);
+  AddTextPage({Key? key, required this.bookId, required this.youtubeInfos, required this.localPath}) : super(key: key);
   
   
   @override
@@ -110,7 +110,7 @@ class _AddTextPageState extends State<AddTextPage> {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => CameraDialog(book: widget.book,),
+                      builder: (context) => CameraDialog(bookId: widget.bookId),
                     );
                     incrementCounter();
                   },
@@ -144,7 +144,7 @@ class _AddTextPageState extends State<AddTextPage> {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => CameraDialog(book: widget.book,),
+                      builder: (context) => CameraDialog(bookId: widget.bookId),
                     );
                     incrementCounter();
                   },
@@ -169,8 +169,7 @@ class _AddTextPageState extends State<AddTextPage> {
                         fit: BoxFit.cover,  // or BoxFit.fill
                         height: 300,
                         width: double.infinity,
-                      )
-                          : Icon(Icons.add, size: 100),
+                      ) : Icon(Icons.add, size: 100),
                     ),
                   ),
                 ),
@@ -249,8 +248,28 @@ class _AddTextPageState extends State<AddTextPage> {
                         ),
                       ),
                     ),
-                  ],
-                ),
+                ],
+              ),
+               ElevatedButton(
+                onPressed: () {
+                  List<SongDB> songs = [];
+
+                  // FIXME: remove this after making selecting songs
+                  isSelected = List<bool>.filled(songNames!.length, true);
+
+                  // TODO: 노래 하나도 선택 안되었으면 완료버튼 눌리면 안됨 (서버측 에러)
+                  
+                  for (var v in widget.youtubeInfos) {
+                    if (isSelected[widget.youtubeInfos.indexOf(v)]) {
+                      songs.add(SongDB(title: v.videoTitle, songUrl: v.url, songId: v.videoId));
+                    }
+                  }
+                  addImageAndSongs(widget.bookId, File(widget.localPath), songs);
+                  
+                  Navigator.pop(context);
+                },
+                child: Text('완료'),
+              ),
             ],
           ),
         ),

@@ -50,6 +50,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 userInfo = await getUserInfoFromServer(email, password);
                 if (userInfo != null) {
+                  print('User found');
                   Navigator.pop(context);
                   Navigator.push(
                     context,

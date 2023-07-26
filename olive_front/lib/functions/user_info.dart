@@ -20,6 +20,14 @@ class SongDB {
     required this.songUrl,
     required this.songId
     });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'songUrl': songUrl,
+      'songId': songId,
+    };
+  }
 }
 
 class ImageDB {
