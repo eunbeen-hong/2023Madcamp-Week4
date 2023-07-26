@@ -5,6 +5,8 @@ import 'package:untitled/functions/api_functions.dart';
 import 'package:untitled/functions/user_info.dart';
 import 'dart:io';
 
+import 'package:untitled/pages/playlist_page.dart';
+
 class AddTextPage extends StatefulWidget {
   final String bookId;
   final List<YoutubeVideoInfo> youtubeInfos;
@@ -20,6 +22,7 @@ class _AddTextPageState extends State<AddTextPage> {
   int counter = 0;
   List<String>? songNames;
   late List<bool> isSelected;
+  String bookName = '데미안';
 
   @override
   void initState() {
@@ -40,6 +43,8 @@ class _AddTextPageState extends State<AddTextPage> {
 
   Widget buildSongItem(int index) {
     String songName = songNames![index];
+    print("counter:$counter");
+    print("songNames:$songNames");
     return ListTile(
       title: Text(songName),
       trailing: Row(
@@ -107,6 +112,7 @@ class _AddTextPageState extends State<AddTextPage> {
                       context: context,
                       builder: (context) => CameraDialog(bookId: widget.bookId),
                     );
+                    incrementCounter();
                   },
                   child: Container(
                     width: double.infinity,
@@ -140,6 +146,7 @@ class _AddTextPageState extends State<AddTextPage> {
                       context: context,
                       builder: (context) => CameraDialog(bookId: widget.bookId),
                     );
+                    incrementCounter();
                   },
                   child: Container(
                     height: 300,
@@ -149,7 +156,7 @@ class _AddTextPageState extends State<AddTextPage> {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
+                           spreadRadius: 5,
                           blurRadius: 7,
                           offset: Offset(0, 3),
                         ),
@@ -168,57 +175,78 @@ class _AddTextPageState extends State<AddTextPage> {
                 ),
               ),
               SizedBox(height: 16),
-              Container(
-                width: double.infinity,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Color(0xff31795B),
-                ),
-                child: Center(
-                  child: Text(
-                    'AI가 추천해주는 노래 찾기',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffffffff),
-                    ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '$bookName의 다음 구절에 어울리는 음악',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff000000),
                   ),
                 ),
               ),
-              Column(
-                children: [
-                  if (counter != 0) SizedBox(height: 16),
-                ],
-              ),
-              Column(
-                children: [
-                  if(counter != 0)
-                    Column(
-                      children: [
-                        if (songNames != null)
-                          Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                            elevation: 4,
-                            child: Container(
-                              width: double.infinity,
-                              height: 320,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16.0),
+              SizedBox(height: 16),
+              if (fileExists != null)
+                Column(
+                  children: [
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      elevation: 4,
+                      child: Container(
+                        width: double.infinity,
+                        height: 320,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.0),
+                          color: Color(0xffffffff),
+                        ),
+                        child: SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          child: Column(
+                            children: [
+                              for (var i = 0; i < songNames!.length; i++)
+                              buildSongItem(i),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      elevation: 4,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          showDialog(
+                            context: context,
+                            builder: (context) => PlaylistPage(book: widget.book),
+                          );
+                          incrementCounter();
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.0),
+                            color: Color(0xff31795B),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '추가 완료하기',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                                 color: Color(0xffffffff),
-                              ),
-                              child: ListView.builder(
-                                itemCount: songNames!.length,
-                                itemBuilder: (context, index) {
-                                  return buildSongItem(index);
-                                },
                               ),
                             ),
                           ),
-                        SizedBox(height: 16),
-                      ],
+                        ),
+                      ),
                     ),
                 ],
               ),
