@@ -27,13 +27,20 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'secret/madcamp4-olive-fa7204c1d8
 def hello_world():
     return 'Hello, World!'
 
+
 @app.route('/api/ocr_result', methods=['POST'])
 def ocr_result_route():
     return ocr_result(request)
 
+
 @app.route('/api/send_text_and_image', methods=['POST'])
 def send_text_and_image_route():
     return send_text_and_image(request)
+
+
+@app.route('/api/add_image_and_songs', methods=['POST'])
+def add_image_and_songs_route():
+    return add_image_and_songs(request)
 
 
 @app.route('/api/upload_image', methods=['POST'])
@@ -81,15 +88,15 @@ def remove_book_from_category_route():
     return remove_book_from_category(request)
 
 
-@app.route('/api/get_user_info/<string:uid>', methods=['GET'])
-def get_user_info_route(uid):
-    return get_user_info(uid)
+@app.route('/api/get_user_info/<string:email>/<string:password>', methods=['GET'])
+def get_user_info_route(email, password):
+    return get_user_info(email, password)
 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
-    
-    
+
+
 '''
 source venv/bin/activate
 python3 app.py

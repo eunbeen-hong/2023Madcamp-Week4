@@ -13,30 +13,11 @@ def ocr_result(request):
         book_name = data.get('book_name')
         author = data.get('author')
         text = data.get('text')
-        image = data.get('image')
-        if text and image:
-            # Decode the base64 image data
-            image_bytes = base64.b64decode(image)
 
-            # Create a unique filename for the image (you can use any method to generate a unique name)
-            filename = 'image.jpg'
-
-            # Replace 'your_project_id' with your actual Firebase project ID
-            bucket_name = 'madcamp4-olive.appspot.com'  # Replace with your Firebase Storage bucket name
-
-            # Upload the image data to Firebase Storage
-            storage_client = storage.Client()
-            bucket = storage_client.bucket(bucket_name)
-            blob = bucket.blob(filename)
-            blob.upload_from_string(image_bytes, content_type='image/jpeg')
-
-            # Get the public URL of the uploaded image
-            url = blob.public_url
-
+        if text:
             song_list = get_song_list(book_name, author, text)
 
-            # Return a response indicating success and the URL of the uploaded image
-            return jsonify({'message': 'Text and image received and processed successfully!', 'image_url': url, 'song_list': song_list})
+            return jsonify({'message': 'Text and image received and processed successfully!', 'song_list': song_list})
         else:
             return jsonify({'error': 'Missing text or image data.'})
     except Exception as e:
@@ -55,25 +36,59 @@ def send_text_and_image(request):
             # Create a unique filename for the image (you can use any method to generate a unique name)
             filename = 'image.jpg'
 
-            # Replace 'your_project_id' with your actual Firebase project ID
-            bucket_name = 'madcamp4-olive.appspot.com'  # Replace with your Firebase Storage bucket name
+            bucket_name = 'madcamp4-olive.appspot.com'
 
-            # Upload the image data to Firebase Storage
             storage_client = storage.Client()
             bucket = storage_client.bucket(bucket_name)
             blob = bucket.blob(filename)
             blob.upload_from_string(image_bytes, content_type='image/jpeg')
 
-            # Get the public URL of the uploaded image
             url = blob.public_url
 
-            # Perform text processing or other tasks with the text and image data as needed
-            # For example, you can save the text to a database, along with the image URL
-
-            # Return a response indicating success and the URL of the uploaded image
             return jsonify({'message': 'Text and image received and processed successfully!', 'url': url})
         else:
             return jsonify({'error': 'Missing text or image data.'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+
+def add_image_and_songs(request):
+    try:
+        data = request.json
+        user_id = data.get('user_id')
+        book_id = data.get('book_id')
+        image = data.get('image')
+        songs = data.get('songs')
+
+        if image and songs:
+
+            image_bytes = base64.b64decode(image)
+
+            current_time = datetime.datetime.now().isoformat()
+            filename = f"{user_id}/{user_id}_{current_time}.jpg"
+
+            bucket_name = 'madcamp4-olive.appspot.com'
+
+            storage_client = storage.Client()
+            bucket = storage_client.bucket(bucket_name)
+            blob = bucket.blob(filename)
+            blob.upload_from_string(image_bytes, content_type='image/jpeg')
+
+            url = blob.public_url
+
+            images_ref = db.reference(
+                f'users/{user_id}/books/{book_id}/images')
+
+            new_image_data = {
+                'url': url,
+                'songs': songs
+            }
+            images_ref.push(new_image_data)
+
+            return jsonify({'message': 'Text and image received and processed successfully!', 'url': url})
+
+        else:
+            return jsonify({'error': 'Missing image or songs'})
     except Exception as e:
         return jsonify({'error': str(e)})
 
@@ -136,15 +151,8 @@ def create_user(request):
         'username': username,
         'email': email,
         'password': password,
-        'categories': {}
-    })
-
-    # add a basic category to the user's shelf
-    categories_ref = new_user_ref.child('categories')
-    new_category_ref = categories_ref.push()
-    new_category_ref.set({
-        'category_name': 'Basic',
-        'books': {}
+        'categories': {},
+        'books': {},
     })
 
     return jsonify({'message': 'User created successfully!'}), 200
@@ -172,20 +180,12 @@ def add_category(request):
 def create_book(request):
     data = request.json
     user_id = data.get('user_id')
-    # category_id = data.get('category_id')
     category_names = data.get('category_names')
     title = data.get('title')
-    # image_file = request.files.get('image_file')
+    author = data.get('author')
     image_url = data.get('image_url')
     songs = data.get('songs')
-
-    # get category ids from category names
-    category_ids = []
-    for category_name in category_names:
-        category_query = db.reference(f'users/{user_id}/categories').order_by_child(
-            'category_name').equal_to(category_name).get()
-        for key, value in category_query.items():
-            category_ids.append(key)
+    book_desc = data.get('book_desc')
 
     current_time = datetime.datetime.now().isoformat()
 
@@ -195,12 +195,22 @@ def create_book(request):
     new_book_ref = books_ref.push()
     new_book_ref.set({
         'title': title,
+        'author': author,
         'last_accessed': current_time,
+        'book_desc': book_desc,
         'images': [{
             'url': image_url,
             'songs': songs
         }],
     })
+
+    # get category ids from category names
+    category_ids = []
+    for category_name in category_names:
+        category_query = db.reference(f'users/{user_id}/categories').order_by_child(
+            'category_name').equal_to(category_name).get()
+        for key, value in category_query.items():
+            category_ids.append(key)
 
     # add book id in book ids list to each category
     for category_id in category_ids:
@@ -333,13 +343,45 @@ def remove_book_from_category(request):
         return jsonify({'error': str(e)}), 500
 
 
-def get_user_info(uid):
+# def get_user_info(email, password):
+#     try:
+#         user = auth.sign_in_with_email_and_password(email, password)
+
+#         uid = user['localId']
+
+#         user_data = db.reference('users').child(uid).get()
+
+#         if user_data:
+#             user_data['uid'] = uid
+#             return jsonify(user_data), 200
+#         else:
+#             return jsonify({'error': 'User not found'}), 404
+#     except auth.AuthError as e:
+#         return jsonify({'error': str(e)}), 400
+
+
+def get_user_info(email, password):
     try:
-        # Assuming you have a users collection in Firebase Realtime Database
-        user_data = db.reference('users').child(uid).get()
-        if user_data:
-            return jsonify(user_data)
+        users_ref = db.reference('users')
+        user_data = None
+        user_uid = None
+
+        user_list = list(users_ref.get().values())
+
+        for i, child in enumerate(user_list):
+            if (child.get('email') == email and child.get('password') == password):
+                user_data = child
+                # Use the index to get the corresponding UID
+                user_uid = list(users_ref.get().keys())[i]
+                break
+
+        if user_data is not None:
+            # Found the user, return the user data as JSON along with the UID
+            user_data['uid'] = user_uid
+            return jsonify({'message': 'Success', 'user_data': user_data}), 200
         else:
-            return jsonify({'error': 'User not found'}), 404
-    except auth.AuthError as e:
+            # User not found, return failure message
+            return jsonify({'message': 'Failed'}), 404
+    except Exception as e:
+        print("error:", str(e))
         return jsonify({'error': str(e)}), 400
