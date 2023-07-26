@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/add_category_page.dart';
+import 'package:untitled/playlist_page.dart';
 
 import 'add_book_page.dart';
 
@@ -148,12 +149,20 @@ class HomePage extends StatelessWidget {
                           itemCount: entries[index].length - 1, // 제목을 제외한 나머지 항목 수
                           itemBuilder: (BuildContext context, int hIndex) {
                             String name = entries[index][hIndex + 1]; // 제목을 제외하고 가져옴
-                            return Container(
-                              width: 160,
-                              color: Colors.transparent,
-                              child: Center(
-                                child: Text(name), // 텍스트로 보여주기
-                              ),
+                            return GestureDetector( // 아이템에 GestureDetector를 적용하여 클릭 이벤트를 감지합니다.
+                                onTap: () {
+                                  Navigator.push( // 클릭 시, Navigator를 이용하여 AddBookPage로 이동합니다.
+                                    context,
+                                    MaterialPageRoute(builder: (context) => PlaylistPage()), // 이동하면서 'name'을 파라미터로 전달합니다.
+                                  );
+                                },
+                                child: Container(
+                                  width: 160,
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: Text(name),
+                                  ),
+                                ),
                             );
                           },
                         ),

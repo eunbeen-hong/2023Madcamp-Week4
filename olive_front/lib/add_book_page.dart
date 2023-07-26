@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/search_book_page.dart';
+import 'package:untitled/search_category_page.dart';
 
 class AddBookPage extends StatefulWidget {
   final Map<String, dynamic>? selectedBook;
-  AddBookPage({this.selectedBook});
+  List<Category>? selectedCategories;
+  AddBookPage({this.selectedBook, required this.selectedCategories});
   @override
   _AddBookPageState createState() => _AddBookPageState();
 }
@@ -229,11 +231,20 @@ class _AddBookPageState extends State<AddBookPage> {
                 ),
                 elevation: 4, // 그림자 효과 크기 조정
                 child: GestureDetector(
-                  onTap: () {
-                    showDialog(
+                  onTap: () async{
+                    List<Category>? selectedCategories = await showDialog<List<Category>>(
                       context: context,
-                      builder: (context) => SearchBookPage(),
+                      builder: (context) => SearchCategoryPage(selectedCategories: widget.selectedCategories),
                     );
+                    print("widget.selectedCategories: ${widget.selectedCategories}");
+
+                    // Handle the selected categories if available.
+                    if (selectedCategories != null && selectedCategories.isNotEmpty) {
+                      setState(() {
+                        // Update the selectedCategories state variable with the selected categories.
+                        widget.selectedCategories = selectedCategories;
+                      });
+                    }
                   },
                   child: Container(
                     width: double.infinity,
@@ -256,6 +267,30 @@ class _AddBookPageState extends State<AddBookPage> {
                 ),
               ),
               SizedBox(height: 16),
+              if (widget.selectedCategories != null && widget.selectedCategories!.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '선택된 카테고리',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: widget.selectedCategories!.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(widget.selectedCategories![index].name),
+                // ... 추가적인 카테고리 정보를 표시할 수 있음
+                        );
+                      },
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
               ElevatedButton(
                 onPressed: () async {
                   // 책칸 추가 완료 처리

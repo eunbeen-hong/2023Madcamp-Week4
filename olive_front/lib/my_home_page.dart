@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (index == 1) { // "Add" 아이템이 선택되었을 때
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AddBookPage()), // AddBookPage로 이동
+        MaterialPageRoute(builder: (context) => AddBookPage(selectedCategories: null,)), // AddBookPage로 이동
       );
     } else {
       setState(() {
@@ -103,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Color(0xff31795B),
+          unselectedItemColor: Color(0xffE6F0EC),
           onTap: _onItemTapped,
           selectedFontSize: 10.0, // 선택된 아이템의 텍스트 크기 설정
           unselectedFontSize: 10.0, // 선택되지 않은 아이템의 텍스트 크기 설정

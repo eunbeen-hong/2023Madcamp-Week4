@@ -47,7 +47,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
     //Navigator.pop(context, selectedBook);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddBookPage(selectedBook: selectedBook)),
+      MaterialPageRoute(builder: (context) => AddBookPage(selectedBook: selectedBook, selectedCategories: null,)),
     );
     //Navigator.pop(context);
   }
