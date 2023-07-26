@@ -245,3 +245,32 @@ Future<void> signUpUser(String email, String password, String username) async {
     return null;
   }
 }
+
+Future<void> addCategory(String categoryName, String userId) async {
+  try {
+    String url = 'http://172.10.5.155/api/add_category';
+
+    Map<String, dynamic> requestBody = {'category_name': categoryName, 'user_id': userId};
+    String requestBodyJson = jsonEncode(requestBody);
+    
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
+
+    if (response.statusCode == 200) {
+      print("Successfully added category to server.");
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      print('Response data: $responseData');
+
+      userInfo!.categories.add(CategoryDB(
+        categoryId: responseData['category_id'],
+        categoryName: categoryName,
+        bookIdList: [],
+      ));
+    } else {
+      print("Failed to add category to server. Status code: ${response.statusCode}");
+    }
+
+  } catch (e) {
+    print("Error adding category to server: $e");
+  }
+}
