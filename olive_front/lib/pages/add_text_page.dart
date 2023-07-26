@@ -108,6 +108,7 @@ class _AddTextPageState extends State<AddTextPage> {
                 elevation: 4,
                 child: GestureDetector(
                   onTap: () {
+                    Navigator.pop(context);
                     showDialog(
                       context: context,
                       builder: (context) => CameraDialog(book: widget.book),
@@ -142,6 +143,7 @@ class _AddTextPageState extends State<AddTextPage> {
                 elevation: 4,
                 child: GestureDetector(
                   onTap: () {
+                    Navigator.pop(context);
                     showDialog(
                       context: context,
                       builder: (context) => CameraDialog(book: widget.book),
