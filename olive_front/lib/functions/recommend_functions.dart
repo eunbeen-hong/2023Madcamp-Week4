@@ -77,6 +77,69 @@ Future<OCRResult> scanImage() async {
   return OCRResult(songList: [], localPath: '');
 }
 
+Future<OCRResult> scanImageFromCamera() async {
+  try {
+    final imagePicker = ImagePicker();
+    XFile? xFile = await imagePicker.pickImage(source: ImageSource.camera);
+    if (xFile == null) {
+      print('No image selected.');
+      return OCRResult(songList: [], localPath: '');
+    }
+
+    File file = File(xFile.path);
+
+    final inputImage = InputImage.fromFile(file);
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.korean);
+    final recognizedText = await textRecognizer.processImage(inputImage);
+
+    print("ocr_text: $recognizedText.text");
+
+    textRecognizer.close();
+
+    // send image and ocr_text to the server
+    String bookName = "분노의 포도";
+    String author = "존 스타인벡";
+    String ocrResult = recognizedText.text;
+
+    print("sending...");
+    OCRResult result = await sendOCRResult(bookName, author, ocrResult);
+
+    // Print the OCRResult
+    print("Received OCR Result:");
+    print("Song List:");
+    for (var song in result.songList) {
+      print("Title: ${song['title']}, Artist: ${song['artist']}");
+    }
+
+    return result;
+  } catch (e) {
+    print('An error occurred when scanning text');
+  }
+
+  return OCRResult(songList: [], localPath: '');
+}
+
+Future<Map<String, dynamic>> imageToUrlsFromCamera() async {
+  OCRResult result = await scanImageFromCamera();
+
+  List<String> urls = [];
+  for (var song in result.songList) {
+    String? title = song['title'];
+    String? artist = song['artist'];
+    if (title != null && artist != null) {
+      String youtubeUrl = await getYouTubeUrl(title, artist);
+      if (youtubeUrl != null) {
+        urls.add(youtubeUrl);
+      }
+    }
+  }
+  String localPath = result.localPath;
+
+  Map<String, dynamic> rtn = {"urls": urls, "localPath": localPath};
+
+  return rtn;
+}
+
 Future<Map<String, dynamic>> imageToUrls() async {
   OCRResult result = await scanImage();
 
@@ -86,9 +149,7 @@ Future<Map<String, dynamic>> imageToUrls() async {
     String? artist = song['artist'];
     if (title != null && artist != null) {
       String? youtubeUrl = await getYouTubeUrl(title, artist);
-      if (youtubeUrl != null) {
-        urls.add(youtubeUrl);
-      }
+      urls.add(youtubeUrl);
     }
   }
   String localPath = result.localPath;
@@ -170,17 +231,18 @@ Future<List<YoutubeVideoInfo>> getUrlVideoInfo(List<String> urls) async {
       continue;
     }
 
-    videoInfoList.add(YoutubeVideoInfo(url: url, videoId: videoId, videoTitle: videoTitle));
+    videoInfoList.add(
+        YoutubeVideoInfo(url: url, videoId: videoId, videoTitle: videoTitle));
   }
 
   return videoInfoList;
 }
-
 
 class YoutubeVideoInfo {
   final String url;
   final String videoId;
   final String videoTitle;
 
-  YoutubeVideoInfo({required this.url, required this.videoId, required this.videoTitle});
+  YoutubeVideoInfo(
+      {required this.url, required this.videoId, required this.videoTitle});
 }

@@ -1,12 +1,12 @@
 import 'package:untitled/pages/home_page.dart';
-import 'package:untitled/ocr.dart';
+import 'package:untitled/dev/ocr.dart';
 import 'package:untitled/pages/testing_page.dart';
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
 import 'package:untitled/pages/add_book_page.dart';
 
-import 'package:untitled/pages/youtube_test_page.dart';
+import 'package:untitled/dev/youtube_test_page.dart';
 import 'package:untitled/youtubeplayer.dart';
 import 'package:untitled/functions/user_info.dart';
 
