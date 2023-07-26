@@ -9,9 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:untitled/functions/user_info.dart';
 
 class CameraDialog extends StatefulWidget {
-  final String bookId;
+  final BookDB book;
 
-  CameraDialog({Key? key, required this.bookId}) : super(key: key);
+  CameraDialog({Key? key, required this.book}) : super(key: key);
   @override
   _CameraDialogState createState() => _CameraDialogState();
 }
@@ -71,7 +71,7 @@ class _CameraDialogState extends State<CameraDialog> {
               Navigator.push(
                 context,
                 //MaterialPageRoute(builder: (context) => CameraPage()),
-                MaterialPageRoute(builder: (context) => AddTextPage(youtubeInfos: youtubeInfos, localPath:localPath, book: widget.book,)),
+                MaterialPageRoute(builder: (context) => AddTextPage(book: widget.book, youtubeInfos: youtubeInfos, localPath:localPath)),
               );
             },
           ),
@@ -86,7 +86,7 @@ class _CameraDialogState extends State<CameraDialog> {
               Navigator.of(context).pop();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddTextPage(bookId: widget.bookId, youtubeInfos: youtubeInfos, localPath:localPath)),
+                MaterialPageRoute(builder: (context) => AddTextPage(book: widget.book, youtubeInfos: youtubeInfos, localPath:localPath)),
               );
             },
           ),

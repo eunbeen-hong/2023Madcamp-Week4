@@ -8,10 +8,10 @@ import 'dart:io';
 import 'package:untitled/pages/playlist_page.dart';
 
 class AddTextPage extends StatefulWidget {
-  final String bookId;
+  final BookDB book;
   final List<YoutubeVideoInfo> youtubeInfos;
   final String localPath;
-  AddTextPage({Key? key, required this.bookId, required this.youtubeInfos, required this.localPath}) : super(key: key);
+  AddTextPage({Key? key, required this.book, required this.youtubeInfos, required this.localPath}) : super(key: key);
   
   
   @override
@@ -110,7 +110,7 @@ class _AddTextPageState extends State<AddTextPage> {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => CameraDialog(bookId: widget.bookId),
+                      builder: (context) => CameraDialog(book: widget.book),
                     );
                     incrementCounter();
                   },
@@ -144,7 +144,7 @@ class _AddTextPageState extends State<AddTextPage> {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => CameraDialog(bookId: widget.bookId),
+                      builder: (context) => CameraDialog(book: widget.book),
                     );
                     incrementCounter();
                   },
@@ -264,7 +264,7 @@ class _AddTextPageState extends State<AddTextPage> {
                       songs.add(SongDB(title: v.videoTitle, songUrl: v.url, songId: v.videoId));
                     }
                   }
-                  addImageAndSongs(widget.bookId, File(widget.localPath), songs);
+                  addImageAndSongs(widget.book.bookId, File(widget.localPath), songs);
                   
                   Navigator.pop(context);
                 },
