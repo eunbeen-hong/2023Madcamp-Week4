@@ -196,7 +196,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (context) => AddTextPage(youtubeInfos: []),
+                          builder: (context) => AddTextPage(youtubeInfos: [], localPath: ""),
                         );
                       },
                       child:Container(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/functions/user_info.dart';
+import 'package:untitled/functions/api_functions.dart';
 
 class AddCategoryPage extends StatelessWidget {
   TextEditingController titleController = TextEditingController();
@@ -23,8 +25,10 @@ class AddCategoryPage extends StatelessWidget {
           onPressed: () {
             // 책칸 추가 완료 처리
             String title = titleController.text;
-            String content = contentController.text;
+            
             // TODO: 책칸 추가 처리 로직 구현
+
+            addCategory(title, userInfo!.userid);
 
             // 추가 완료 후 다이얼로그 닫기
             Navigator.pop(context);
