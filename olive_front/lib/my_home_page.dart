@@ -25,7 +25,6 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),
     OcrPage(),
     TestPage(),
-    YoutubePage(),
     YoutubePlayerPage()
   ];
 
@@ -91,10 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Profile',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.developer_mode),
-              label: 'Dev Tools',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.developer_mode),
