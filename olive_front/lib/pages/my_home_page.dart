@@ -11,7 +11,7 @@ import 'package:untitled/youtubeplayer.dart';
 import 'package:untitled/functions/user_info.dart';
 
 class MyHomePage extends StatefulWidget {
-  final UserInfoDB? userInfo;
+  final UserInfoDB userInfo;
   
   MyHomePage({required this.userInfo, Key? key}) : super(key: key); // Keep this constructor
 
@@ -21,15 +21,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
   int _selectedIndex = 0;
+ final List<Widget> _widgetOptions = <Widget>[];
 
-  final List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
-    OcrPage(),
-    TestPage(),
-    YoutubePlayerPage()
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the list of widgets with the HomePage widget
+    _widgetOptions.add(HomePage(userInfo: widget.userInfo));
+    _widgetOptions.add(OcrPage());
+    _widgetOptions.add(TestPage());
+    _widgetOptions.add(YoutubePage());
+    _widgetOptions.add(YoutubePlayerPage());
+  }
 
   final PageController _pageController = PageController();
 

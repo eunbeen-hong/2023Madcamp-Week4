@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/camera_dialog.dart';
+import 'package:untitled/functions/recommend_functions.dart';
 
 class AddTextPage extends StatefulWidget {
-  final List<String> ids;
-  AddTextPage({Key? key,required this.ids}) : super(key: key);
+  final List<YoutubeVideoInfo> youtubeInfos;
+  AddTextPage({Key? key,required this.youtubeInfos, required String localPath}) : super(key: key);
 
   @override
   _AddTextPageState createState() => _AddTextPageState();
@@ -11,22 +12,28 @@ class AddTextPage extends StatefulWidget {
 
 class _AddTextPageState extends State<AddTextPage> {
   int counter = 0;
+  List<String>? songNames;
+  late List<bool> isSelected;
+
+
+  @override
+  void initState() {
+    super.initState();
+    songNames = widget.youtubeInfos.map((info) =>
+    info.videoTitle.length > 20 ? info.videoTitle.substring(0, 20) + '...' : info.videoTitle
+    ).toList();
+    isSelected = List<bool>.filled(songNames!.length, false);
+  }
+
   void incrementCounter() {
     setState(() {
       counter++;
     });
   }
-  List<String> songNames = [
-    'Song 1',
-    'Song 2',
-    'Song 3',
-    'Song 4',
-    'Song 5',
-  ];
   Widget buildSongItem(int index) {
-    String songName = songNames[index];
+    String songName = songNames![index];
     return ListTile(
-      leading: Icon(Icons.music_note),
+      //leading: Icon(Icons.music_note),
       title: Text(songName),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -38,8 +45,13 @@ class _AddTextPageState extends State<AddTextPage> {
           ),
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
-          ),
+            color: isSelected[index] ? Colors.grey : Colors.black, // 변경된 부분
+            onPressed: () {
+              setState(() {
+                isSelected[index] = !isSelected[index];
+              });
+            },
+          )
         ],
       ),
     );
@@ -140,34 +152,25 @@ class _AddTextPageState extends State<AddTextPage> {
                   ),
               ),
               SizedBox(height: 16),
-              Card(
-                shape: RoundedRectangleBorder(
+              Container(
+                width: double.infinity,
+                height: 40,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.0),
+                  color: Color(0xff31795B),
                 ),
-                elevation: 4,
-                child: GestureDetector(
-                  onTap: incrementCounter,
-                  child: Container(
-                    width: double.infinity,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: Color(0xff31795B),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'AI가 추천해주는 노래 찾기',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xffffffff),
-                        ),
-                      ),
+                child: Center(
+                  child: Text(
+                    'AI가 추천해주는 노래 찾기',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffffffff),
                     ),
                   ),
                 ),
               ),
-              if (counter != 0)
+              if (songNames != null)
                 Column(
                   children: [
                     Card(
@@ -183,7 +186,7 @@ class _AddTextPageState extends State<AddTextPage> {
                           color: Color(0xffffffff),
                         ),
                         child: ListView.builder(
-                          itemCount: songNames.length,
+                          itemCount: songNames!.length,
                           itemBuilder: (context, index) {
                             return buildSongItem(index);
                           },

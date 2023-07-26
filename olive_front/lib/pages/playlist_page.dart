@@ -25,6 +25,40 @@ class _PlaylistPageState extends State<PlaylistPage> {
   );
   String bookTitle = "데미안";
 
+  List<String> songNames = [
+    'Song 1',
+    'Song 2',
+    'Song 3',
+    'Song 4',
+    'Song 5',
+  ];
+
+  Widget buildSongItem(int index) {
+    String songName = songNames[index];
+    return ListTile(
+      leading: Icon(Icons.music_note),
+      title: Text(songName),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end, // Align the icons to the right side
+        children: [
+          IconButton(
+            icon: Icon(Icons.play_arrow),
+            onPressed: () {
+              // TODO: Implement play functionality for the song at the given index.
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              // TODO: Implement add functionality for the song at the given index.
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,7 +196,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (context) => AddTextPage(ids: [],),
+                          builder: (context) => AddTextPage(youtubeInfos: [], localPath: '',),
                         );
                       },
                       child:Container(
@@ -191,6 +225,31 @@ class _PlaylistPageState extends State<PlaylistPage> {
                           ),
                         ),
                       ),
+                    ),
+                    Column(
+                      children: [
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          elevation: 4,
+                          child: Container(
+                            width: double.infinity,
+                            height: 320,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              color: Color(0xffffffff),
+                            ),
+                            child: ListView.builder(
+                              itemCount: songNames.length,
+                              itemBuilder: (context, index) {
+                                return buildSongItem(index);
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                      ],
                     ),
                   ],
                 ),

@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 Future<OCRResult> scanImage() async {
+  String path;
   // // check if the camera is available
   // if (_cameraController == null) return;
 
@@ -25,10 +26,11 @@ Future<OCRResult> scanImage() async {
     XFile? xFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (xFile == null) {
       print('No image selected.');
-      return OCRResult(songList: [], imageUrl: '');
+      return OCRResult(songList: [], localPath: '');
     }
 
     File file = File(xFile.path);
+    path = xFile.path;
 
     final inputImage = InputImage.fromFile(file);
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.korean);
@@ -52,12 +54,11 @@ Future<OCRResult> scanImage() async {
     String ocrResult = recognizedText.text;
 
     print("sending...");
-    OCRResult result = await sendOCRResult(file, bookName, author, ocrResult);
+    OCRResult result = await sendOCRResult(bookName, author, ocrResult);
 
+    result.localPath = path;
     // Print the OCRResult
     print("Received OCR Result:");
-    print("Image URL: ${result.imageUrl}");
-    print("Song List:");
     for (var song in result.songList) {
       print("Title: ${song['title']}, Artist: ${song['artist']}");
     }
@@ -73,9 +74,8 @@ Future<OCRResult> scanImage() async {
     print('An error occurred when scanning text');
   }
 
-  return OCRResult(songList: [], imageUrl: '');
+  return OCRResult(songList: [], localPath: '');
 }
-
 
 Future<OCRResult> scanImageFromCamera() async {
   try {
@@ -83,7 +83,7 @@ Future<OCRResult> scanImageFromCamera() async {
     XFile? xFile = await imagePicker.pickImage(source: ImageSource.camera);
     if (xFile == null) {
       print('No image selected.');
-      return OCRResult(songList: [], imageUrl: '');
+      return OCRResult(songList: [], localPath: '');
     }
 
     File file = File(xFile.path);
@@ -102,11 +102,10 @@ Future<OCRResult> scanImageFromCamera() async {
     String ocrResult = recognizedText.text;
 
     print("sending...");
-    OCRResult result = await sendOCRResult(file, bookName, author, ocrResult);
+    OCRResult result = await sendOCRResult(bookName, author, ocrResult);
 
     // Print the OCRResult
     print("Received OCR Result:");
-    print("Image URL: ${result.imageUrl}");
     print("Song List:");
     for (var song in result.songList) {
       print("Title: ${song['title']}, Artist: ${song['artist']}");
@@ -117,10 +116,10 @@ Future<OCRResult> scanImageFromCamera() async {
     print('An error occurred when scanning text');
   }
 
-  return OCRResult(songList: [], imageUrl: '');
+  return OCRResult(songList: [], localPath: '');
 }
 
-Future<List<String>> imageToUrlsFromCamera() async {
+Future<Map<String, dynamic>> imageToUrlsFromCamera() async {
   OCRResult result = await scanImageFromCamera();
 
   List<String> urls = [];
@@ -128,17 +127,20 @@ Future<List<String>> imageToUrlsFromCamera() async {
     String? title = song['title'];
     String? artist = song['artist'];
     if (title != null && artist != null) {
-      String? youtubeUrl = await getYouTubeUrl(title, artist);
+      String youtubeUrl = await getYouTubeUrl(title, artist);
       if (youtubeUrl != null) {
         urls.add(youtubeUrl);
       }
     }
   }
+  String localPath = result.localPath;
 
-  return urls;
+  Map<String, dynamic> rtn = {"urls": urls, "localPath": localPath};
+
+  return rtn;
 }
 
-Future<List<String>> imageToUrls() async {
+Future<Map<String, dynamic>> imageToUrls() async {
   OCRResult result = await scanImage();
 
   List<String> urls = [];
@@ -147,13 +149,14 @@ Future<List<String>> imageToUrls() async {
     String? artist = song['artist'];
     if (title != null && artist != null) {
       String? youtubeUrl = await getYouTubeUrl(title, artist);
-      if (youtubeUrl != null) {
-        urls.add(youtubeUrl);
-      }
+      urls.add(youtubeUrl);
     }
   }
+  String localPath = result.localPath;
 
-  return urls;
+  Map<String, dynamic> rtn = {"urls": urls, "localPath": localPath};
+
+  return rtn;
 }
 
 Future<List<String>> UrlsToYoutubeIds(List<String> urls) async {
@@ -228,17 +231,18 @@ Future<List<YoutubeVideoInfo>> getUrlVideoInfo(List<String> urls) async {
       continue;
     }
 
-    videoInfoList.add(YoutubeVideoInfo(url: url, videoId: videoId, videoTitle: videoTitle));
+    videoInfoList.add(
+        YoutubeVideoInfo(url: url, videoId: videoId, videoTitle: videoTitle));
   }
 
   return videoInfoList;
 }
-
 
 class YoutubeVideoInfo {
   final String url;
   final String videoId;
   final String videoTitle;
 
-  YoutubeVideoInfo({required this.url, required this.videoId, required this.videoTitle});
+  YoutubeVideoInfo(
+      {required this.url, required this.videoId, required this.videoTitle});
 }
