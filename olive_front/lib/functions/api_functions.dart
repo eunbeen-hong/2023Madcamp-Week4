@@ -40,33 +40,24 @@ Future<void> sendTextAndImage(String text) async {
 }
 
 // use book desc for text when first creating book
-Future<OCRResult> sendOCRResult(
-    File file, String bookName, String author, String text) async {
+Future<OCRResult> sendOCRResult(File file, String bookName, String author, String text) async {
   try {
-    String url =
-        'http://172.10.5.155/api/ocr_result'; // Replace with your server's URL
+    String url = 'http://172.10.5.155/api/ocr_result'; // Replace with your server's URL
 
     // Read the image file as bytes and encode it to base64
     List<int> imageBytes = await file.readAsBytes();
     String base64Image = base64Encode(imageBytes);
 
     // Create a JSON payload containing the base64 encoded image data
-    Map<String, dynamic> requestBody = {
-      'image': base64Image,
-      'text': text,
-      'book_name': bookName,
-      'author': author
-    };
+    Map<String, dynamic> requestBody = {'image': base64Image, 'text':text, 'book_name': bookName, 'author': author};
     String requestBodyJson = jsonEncode(requestBody);
-    print("1");
+
     // Set the headers for JSON content
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     // Send the POST request with the JSON payload
-    http.Response response = await http.post(Uri.parse(url),
-        headers: headers, body: requestBodyJson);
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
 
-    print("2");
     if (response.statusCode == 200) {
       // Parse the server response JSON (if needed)
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -80,27 +71,25 @@ Future<OCRResult> sendOCRResult(
         };
       }).toList();
 
-      print("3");
       print("Image uploaded successfully to server.");
       print("URL: $imageUrl");
       print("songList: $songList");
 
       return OCRResult(songList: songList, imageUrl: imageUrl);
     } else {
-      print(
-          "Failed to upload image to server. Status code: ${response.statusCode}");
+      print("Failed to upload image to server. Status code: ${response.statusCode}");
     }
   } catch (e) {
-    print("~Error uploading image to server: $e");
+    print("Error uploading image to server: $e");
   }
+
 
   return OCRResult(songList: [], imageUrl: '');
 }
 
 Future<void> uploadImage(File file) async {
   try {
-    String url =
-        'http://172.10.5.155/api/upload_image'; // Replace with your server's URL
+    String url = 'http://172.10.5.155/api/upload_image'; // Replace with your server's URL
 
     // Read the image file as bytes and encode it to base64
     List<int> imageBytes = await file.readAsBytes();
@@ -114,8 +103,7 @@ Future<void> uploadImage(File file) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     // Send the POST request with the JSON payload
-    http.Response response = await http.post(Uri.parse(url),
-        headers: headers, body: requestBodyJson);
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
 
     if (response.statusCode == 200) {
       // Parse the server response JSON (if needed)
@@ -123,8 +111,7 @@ Future<void> uploadImage(File file) async {
       String imageUrl = jsonResponse['url'];
       print("Image uploaded successfully to server. URL: $imageUrl");
     } else {
-      print(
-          "Failed to upload image to server. Status code: ${response.statusCode}");
+      print("Failed to upload image to server. Status code: ${response.statusCode}");
     }
   } catch (e) {
     print("Error uploading image to server: $e");
@@ -139,7 +126,9 @@ Future<void> sendText(String text) async {
 
   Uri url = Uri.parse(urlString); // Convert String URL to Uri object
 
+
   http.Response response = await http.post(url, headers: headers, body: body);
+
 
   if (response.statusCode == 200) {
     // Request successful, parse the response data
@@ -150,6 +139,8 @@ Future<void> sendText(String text) async {
     print('Error: ${response.statusCode}');
   }
 }
+
+
 
 Future<Map<String, dynamic>> getUserInfoFromServer(String uid) async {
   try {
