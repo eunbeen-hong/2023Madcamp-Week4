@@ -1,13 +1,13 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart';
 
 Future<String> getYouTubeUrl(String songTitle, String artist) async {
-  // Read the API key from the JSON file
   String apiKey;
   try {
-    File apiKeyFile = File('secret/youtube_api_key.json');
-    String apiKeyJson = await apiKeyFile.readAsString();
+    String apiKeyJson =
+        await rootBundle.loadString('secret/youtube_api_key.json');
     Map<String, dynamic> apiKeyData = json.decode(apiKeyJson);
     apiKey = apiKeyData['youtube_api_key'];
   } catch (e) {
