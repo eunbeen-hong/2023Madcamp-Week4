@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/add_category_page.dart';
-import 'package:untitled/playlist_page.dart';
+import 'package:untitled/pages/add_category_page.dart';
+import 'package:untitled/pages/playlist_page.dart';
 
 import 'add_book_page.dart';
 

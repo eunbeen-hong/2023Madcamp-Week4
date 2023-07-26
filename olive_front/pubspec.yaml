@@ -62,5 +62,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - secret/youtube_api_key.json
     - assets/
     - assets/olive_icon.png

@@ -1,24 +1,27 @@
-import 'package:untitled/home_page.dart';
+import 'package:untitled/pages/home_page.dart';
 import 'package:untitled/ocr.dart';
-import 'package:untitled/testing_page.dart';
+import 'package:untitled/pages/testing_page.dart';
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
-import 'package:untitled/add_book_page.dart';
+import 'package:untitled/pages/add_book_page.dart';
 
-import 'package:untitled/youtube_test_page.dart';
+import 'package:untitled/pages/youtube_test_page.dart';
 import 'package:untitled/youtubeplayer.dart';
-
-
+import 'package:untitled/functions/user_info.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  final UserInfoDB? userInfo;
+  
+  MyHomePage({required this.userInfo, Key? key}) : super(key: key); // Keep this constructor
+
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  
   int _selectedIndex = 0;
 
   final List<Widget> _widgetOptions = <Widget>[

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/search_book_page.dart';
-import 'package:untitled/search_category_page.dart';
+import 'package:untitled/pages/search_category_page.dart';
+import 'package:untitled/pages/search_book_page.dart';
 
 class AddBookPage extends StatefulWidget {
   final Map<String, dynamic>? selectedBook;

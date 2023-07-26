@@ -4,8 +4,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:untitled/result_screen.dart';
-import 'package:untitled/api_functions.dart';
+import 'package:untitled/functions/api_functions.dart';
 
 class OcrPage extends StatefulWidget {
   const OcrPage({super.key});
@@ -88,8 +89,8 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
                           padding: const EdgeInsets.only(bottom: 30.0),
                           child: Center(
                             child: ElevatedButton(
-                              onPressed: _scanImage,
-                              child: const Text('Scan text'),
+                              onPressed: _scanImage1,
+                              child: const Text('Select pic from Gallery'),
                             ),
                           ),
                         ),
@@ -164,35 +165,58 @@ class _OcrPageState extends State<OcrPage> with WidgetsBindingObserver {
     setState(() {});
   }
 
-  Future<void> _scanImage() async {
+  Future<void> _scanImage1() async {
+    // check if the camera is available
     if (_cameraController == null) return;
 
     final navigator = Navigator.of(context);
 
     try {
-      final pictureFile = await _cameraController!.takePicture();
+      // final pictureFile = await _cameraController!.takePicture();
+      //
+      // final file = File(pictureFile.path);
 
-      final file = File(pictureFile.path);
-      await uploadImage(file);
+      final imagePicker = ImagePicker();
+      XFile? xFile  = await imagePicker.pickImage(source: ImageSource.gallery);
+      if (xFile  == null) {
+        print('No image selected.');
+        return;
+      }
+
+      File file = File(xFile.path);
 
       final inputImage = InputImage.fromFile(file);
       final textRecognizer =
           TextRecognizer(script: TextRecognitionScript.korean);
       final recognizedText = await textRecognizer.processImage(inputImage);
 
-      print("here");
-      print(inputImage.runtimeType.toString());
+      // await navigator.push(
+      //   MaterialPageRoute(
+      //     builder: (BuildContext context) =>
+      //         ResultScreen(text: recognizedText.text),
+      //   ),
+      // );
 
-      await sendTextAndImage(recognizedText.text); // send txt, img to server
-
-      await navigator.push(
-        MaterialPageRoute(
-          builder: (BuildContext context) =>
-              ResultScreen(text: recognizedText.text),
-        ),
-      );
+      print("ocr_text: $recognizedText.text");
 
       textRecognizer.close();
+
+      // send image and ocr_text to the server
+      String bookName = "분노의 포도";
+      String author = "존 스타인벡";
+      // String ocrResult = "분노의 포도가 사람들의 영혼을 가득 채우며 점점 익어간다.";
+      String ocrResult = recognizedText.text;
+
+      print("sending...");
+      OCRResult result = await sendOCRResult(file, bookName, author, ocrResult);
+
+      // Print the OCRResult
+      print("Received OCR Result:");
+      print("Image URL: ${result.imageUrl}");
+      print("Song List:");
+      for (var song in result.songList) {
+        print("Title: ${song['title']}, Artist: ${song['artist']}");
+      }
       
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

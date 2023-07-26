@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/api_functions.dart';
+import 'package:untitled/functions/api_functions.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:untitled/functions/recommend_functions.dart';
+import 'package:untitled/functions/user_info.dart';
 import 'dart:io';
 import 'dart:convert';
 
@@ -11,7 +13,7 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   TextEditingController _textController = TextEditingController();
-  Map<String, dynamic>? _userInfo;
+  UserInfoDB? _userInfo;
 
 
   @override
@@ -42,14 +44,23 @@ class _TestPageState extends State<TestPage> {
             ),
             SizedBox(height: 16),
             ElevatedButton(
+              onPressed: () => scanImage(),
+              child: Text('recommendation'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
                 onPressed: () =>  _captureImage(),
                 child: Text('Send Image to Flask'),
             ),
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
-                String uid = '-Na10IK5-1gZE07mFjGz'; // Replace with the actual user ID
-                Map<String, dynamic> userInfo = await getUserInfoFromServer(uid);
+                print('Get User Info button pressed');
+                String email = 'jane@gmail.com';
+                String password = 'qwerty1234';
+                UserInfoDB? userInfo = await getUserInfoFromServer(email, password);
+                print('Received user info from server:');
+                // printUserInfoDB(userInfo);
                 setState(() {
                   _userInfo = userInfo;
                 });

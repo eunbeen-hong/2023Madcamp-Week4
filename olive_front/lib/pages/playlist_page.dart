@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/add_text_page.dart';
+import 'package:untitled/pages/add_text_page.dart';
 
 class Book {
   final String title;
