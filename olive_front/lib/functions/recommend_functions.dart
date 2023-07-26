@@ -152,27 +152,31 @@ Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
   }
 }
 
-Future<List<Tuple3<String, String, String>>> getUrlVideoInfo(List<String> urls) async {
+Future<List<YoutubeVideoInfo>> getUrlVideoInfo(List<String> urls) async {
   List<String> videoIds = await UrlsToYoutubeIds(urls);
   Map<String, String> videoTitles = await getYoutubeVideoTitles(videoIds);
 
-  List<Tuple3<String, String, String>> videoInfoList = [];
+  List<YoutubeVideoInfo> videoInfoList = [];
   for (int i = 0; i < urls.length; i++) {
     String url = urls[i];
     String videoId = videoIds[i];
-    String videoTitle = videoTitles[videoId] ?? 'Title not found';
+    String? videoTitle = videoTitles[videoId];
 
-    videoInfoList.add(Tuple3(url, videoId, videoTitle));
+    if (url == null || videoId == null || videoTitle == null) {
+      continue;
+    }
+
+    videoInfoList.add(YoutubeVideoInfo(url: url, videoId: videoId, videoTitle: videoTitle));
   }
 
   return videoInfoList;
 }
 
-// Tuple3 class
-class Tuple3<T1, T2, T3> {
-  final T1 item1;
-  final T2 item2;
-  final T3 item3;
 
-  Tuple3(this.item1, this.item2, this.item3);
+class YoutubeVideoInfo {
+  final String url;
+  final String videoId;
+  final String videoTitle;
+
+  YoutubeVideoInfo(this.url, this.videoId, this.videoTitle);
 }
