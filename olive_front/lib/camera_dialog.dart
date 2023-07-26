@@ -43,11 +43,11 @@ class _CameraDialogState extends State<CameraDialog> {
               Map<String, dynamic> result = await getIdsFromGallery();
               List<YoutubeVideoInfo> youtubeInfos = result["youtubeInfos"];
               String localPath = result["localPath"];
+              Navigator.of(context).pop();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AddTextPage(youtubeInfos: youtubeInfos, localPath:localPath)),
               );
-              Navigator.of(context).pop();
             },
           ),
         ],

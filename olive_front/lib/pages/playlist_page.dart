@@ -13,6 +13,7 @@ class PlaylistPage extends StatefulWidget {
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {
+
   List<SongDB> songList = [];
   
   @override
@@ -47,6 +48,11 @@ class _PlaylistPageState extends State<PlaylistPage> {
         ],
       ),
     );
+  }
+  void incrementCounter() {
+    setState(() {
+      counter++;
+    });
   }
 
   @override
