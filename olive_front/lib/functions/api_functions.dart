@@ -63,7 +63,7 @@ Future<void> addImageAndSongs(String bookId, File image, List<SongDB> songs) asy
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       print("Successfully added image and songs to server. Response data: $jsonResponse");
       userInfo!.books.firstWhere((book) => book.bookId == bookId).images.add(ImageDB(
-        imageUrl: jsonResponse['image_url'],
+        imageUrl: jsonResponse['url'],
         songs: songs,
       ));
     } else {
