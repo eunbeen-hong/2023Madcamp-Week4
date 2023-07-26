@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io'; // not supported in mobile platforms
+import 'dart:io';
 import 'package:untitled/functions/user_info.dart';
 
 class OCRResult {
@@ -37,6 +37,36 @@ Future<void> sendTextAndImage(String text) async {
     print('Response data: $responseData');
   } else {
     print('Error: ${response.statusCode}');
+  }
+}
+
+Future<void> addImageAndSongs(String bookId, File image, List<SongDB> songs) async {
+  try {
+    String url = 'http://172.10.5.155/api/add_image_and_songs';
+
+    List<int> imageBytes = await image.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    Map<String, dynamic> requestBody = {'image': base64Image,
+      'user_id': userInfo!.userid,
+      'book_id': bookId,
+      'songs': songs.map((song) => song.toJson()).toList(),
+      };
+    String requestBodyJson = jsonEncode(requestBody);
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
+
+
+    if (response.statusCode == 200) {
+      // Handle the response
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print("Successfully added image and songs to server. Response data: $jsonResponse");
+    } else {
+      print("Failed to add image and songs to server. Status code: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error adding image and songs to server: $e");
   }
 }
 
