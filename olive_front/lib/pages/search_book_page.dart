@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:untitled/functions/api_functions.dart';
+import 'package:untitled/functions/recommend_functions.dart';
+import 'package:untitled/youtube.dart';
 import 'add_book_page.dart';
 
 class SearchBookPage extends StatefulWidget {
@@ -35,19 +37,40 @@ class _SearchBookPageState extends State<SearchBookPage> {
       searchResults = List<Map<String, dynamic>>.from(data['items']);
     });
   }
-  void onBookSelected(Map<String, dynamic> book) {
+  void onBookSelected(Map<String, dynamic> book) async {
     // 이전 화면으로 책 정보 전달
     Map<String, dynamic> selectedBook = {
       'image': book['image'], // 책 이미지 URL
       'title': book['title'], // 책 제목
       'author': book['author'], // 책 저자
+      'bookDesc': book['description'], // TODO 책 설명
     };
+
+    OCRResult ocrResult = await sendOCRResult(selectedBook['title'], selectedBook['author'], selectedBook['bookDesc']);
+
+    List<String> urls = [];
+    for (var song in ocrResult.songList) {
+      String? title = song[0];
+      String? artist = song[1];
+      if (title != null && artist != null) {
+        String youtubeUrl = await getYouTubeUrl(title, artist);
+        urls.add(youtubeUrl);
+      }
+    }
+    List<YoutubeVideoInfo> youtubeInfos = await getUrlVideoInfo(urls);
+
+
     print("Why if doesnt work?1");
     print("What is selectedBook?1: ${selectedBook}");
     //Navigator.pop(context, selectedBook);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddBookPage(selectedBook: selectedBook, selectedCategories: null,)),
+      MaterialPageRoute(builder: (context) => 
+      AddBookPage(
+        youtubeInfos: youtubeInfos, 
+        selectedBook: selectedBook, 
+        selectedCategories: null,
+        )),
     );
     //Navigator.pop(context);
   }

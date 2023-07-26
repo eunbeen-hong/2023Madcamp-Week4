@@ -15,6 +15,7 @@ class PlaylistPage extends StatefulWidget {
 class _PlaylistPageState extends State<PlaylistPage> {
 
   List<SongDB> songList = [];
+  int counter = 0;
   
   @override
   void initState() {
@@ -49,6 +50,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
       ),
     );
   }
+
+  // FIXME: 어디에서도 안쓰이는..?
   void incrementCounter() {
     setState(() {
       counter++;

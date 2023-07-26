@@ -6,7 +6,7 @@ import 'dart:io';
 class AddTextPage extends StatefulWidget {
   final List<YoutubeVideoInfo> youtubeInfos;
   final String localPath;
-  AddTextPage({Key? key,required this.youtubeInfos, required this.localPath}) : super(key: key);
+  AddTextPage({Key? key, required this.youtubeInfos, required this.localPath}) : super(key: key);
   
   
   @override

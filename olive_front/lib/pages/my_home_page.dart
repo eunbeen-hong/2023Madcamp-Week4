@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (index == 1) { // "Add" 아이템이 선택되었을 때
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AddBookPage(selectedCategories: null,)), // AddBookPage로 이동
+        MaterialPageRoute(builder: (context) => AddBookPage(selectedBook: null, youtubeInfos: null, selectedCategories: null,)), // AddBookPage로 이동
       );
     } else {
       setState(() {

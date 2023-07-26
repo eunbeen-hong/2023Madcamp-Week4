@@ -43,10 +43,8 @@ Future<void> sendTextAndImage(String text) async {
 // use book desc for text when first creating book
 Future<OCRResult> sendOCRResult(String bookName, String author, String text) async {
   try {
-    String url = 'http://172.10.5.155/api/ocr_result'; // Replace with your server's URL
-    print("1");
-    // Read the image file as bytes and encode it to base64
-    // Create a JSON payload containing the base64 encoded image data
+    String url = 'http://172.10.5.155/api/ocr_result';
+    
     Map<String, dynamic> requestBody = {'text':text, 'book_name': bookName, 'author': author};
     String requestBodyJson = jsonEncode(requestBody);
 
@@ -55,9 +53,8 @@ Future<OCRResult> sendOCRResult(String bookName, String author, String text) asy
 
     // Send the POST request with the JSON payload
     http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
-    print("2");
+
     if (response.statusCode == 200) {
-      // Parse the server response JSON (if needed)
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       print("response.body:${response.body}");
       print("3");
