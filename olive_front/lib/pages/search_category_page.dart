@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/add_book_page.dart';
+import 'package:untitled/functions/recommend_functions.dart';
 
 
 class SearchCategoryPage extends StatefulWidget {
-  final List<Category>? selectedCategories;
-  SearchCategoryPage({Key? key, required this.selectedCategories}) : super(key: key);
+  final Map<String, dynamic>? selectedBook;
+  List<Category>? selectedCategories;
+  final List<YoutubeVideoInfo> youtubeInfos;
+  SearchCategoryPage({Key? key, required this.youtubeInfos, required this.selectedBook, required this.selectedCategories}) : super(key: key);
 
   @override
   _SearchCategoryPageState createState() => _SearchCategoryPageState();
@@ -77,7 +80,12 @@ class _SearchCategoryPageState extends State<SearchCategoryPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AddBookPage(selectedCategories: selectedCategories),
+            builder: (context) => 
+            AddBookPage(
+              youtubeInfos: widget.youtubeInfos, 
+              selectedBook: widget.selectedBook, 
+              selectedCategories: selectedCategories,
+              ),
           ),
         );
     });

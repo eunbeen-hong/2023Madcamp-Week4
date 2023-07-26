@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/search_category_page.dart';
 import 'package:untitled/pages/search_book_page.dart';
+import 'package:untitled/functions/recommend_functions.dart';
 
 class AddBookPage extends StatefulWidget {
   final Map<String, dynamic>? selectedBook;
   List<Category>? selectedCategories;
-  AddBookPage({this.selectedBook, required this.selectedCategories});
+  final List<YoutubeVideoInfo>? youtubeInfos;
+
+  AddBookPage({Key? key, required this.youtubeInfos, required this.selectedBook, required this.selectedCategories}) : super(key: key);
   @override
   _AddBookPageState createState() => _AddBookPageState();
 }
@@ -14,22 +17,33 @@ class _AddBookPageState extends State<AddBookPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   int counter = 0;
+  List<String>? songNames;
+  late List<bool> isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.youtubeInfos != null) {
+      
+      songNames = widget.youtubeInfos!.map((info) =>
+      info.videoTitle.length > 20
+          ? info.videoTitle.substring(0, 20) + '...'
+          : info.videoTitle
+      ).toList();
+      isSelected = List<bool>.filled(songNames!.length, false);
+    }
+  }
+
   void incrementCounter() {
     // Function to increment the counter when the InkWell is tapped.
     setState(() {
       counter++;
     });
   }
-  List<String> songNames = [
-    'Song 1',
-    'Song 2',
-    'Song 3',
-    'Song 4',
-    'Song 5',
-  ];
+
 
   Widget buildSongItem(int index) {
-    String songName = songNames[index];
+    String songName = songNames![index];
     return ListTile(
       leading: Icon(Icons.music_note),
       title: Text(songName),
@@ -45,10 +59,13 @@ class _AddBookPageState extends State<AddBookPage> {
           ),
           IconButton(
             icon: Icon(Icons.add),
+            color: isSelected[index] ? Colors.grey : Colors.black,
             onPressed: () {
-              // TODO: Implement add functionality for the song at the given index.
+              setState(() {
+                isSelected[index] = !isSelected[index];
+              });
             },
-          ),
+          )
         ],
       ),
     );
@@ -215,7 +232,7 @@ class _AddBookPageState extends State<AddBookPage> {
                           color: Color(0xffffffff),
                         ),
                         child: ListView.builder(
-                          itemCount: songNames.length,
+                          itemCount: songNames!.length,
                           itemBuilder: (context, index) {
                             return buildSongItem(index);
                           },
@@ -234,7 +251,7 @@ class _AddBookPageState extends State<AddBookPage> {
                   onTap: () async{
                     List<Category>? selectedCategories = await showDialog<List<Category>>(
                       context: context,
-                      builder: (context) => SearchCategoryPage(selectedCategories: widget.selectedCategories),
+                      builder: (context) => SearchCategoryPage(selectedBook: widget.selectedBook, selectedCategories: widget.selectedCategories, youtubeInfos: widget.youtubeInfos!),
                     );
                     print("widget.selectedCategories: ${widget.selectedCategories}");
 

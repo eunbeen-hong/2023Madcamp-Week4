@@ -15,6 +15,7 @@ class PlaylistPage extends StatefulWidget {
 class _PlaylistPageState extends State<PlaylistPage> {
 
   List<SongDB> songList = [];
+  int counter = 0;
   
   @override
   void initState() {
@@ -49,6 +50,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
       ),
     );
   }
+
+  // FIXME: 어디에서도 안쓰이는..?
   void incrementCounter() {
     setState(() {
       counter++;
@@ -194,6 +197,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                       showDialog(
                         context: context,
                         builder: (context) => AddTextPage(
+                          bookId: widget.book.bookId,
                           youtubeInfos: [],
                           localPath: '',
                         ),
@@ -231,7 +235,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (context) => AddTextPage(youtubeInfos: [], localPath: ""),
+                        builder: (context) => AddTextPage(bookId: widget.book.bookId, youtubeInfos: [], localPath: ""),
                       );
                     },
                     child:Card(
