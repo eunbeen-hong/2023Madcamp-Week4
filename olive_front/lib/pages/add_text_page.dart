@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:untitled/camera_dialog.dart';
 
 class AddTextPage extends StatefulWidget {
-  AddTextPage({Key? key}) : super(key: key);
+  final List<String> ids;
+  AddTextPage({Key? key,required this.ids}) : super(key: key);
 
   @override
   _AddTextPageState createState() => _AddTextPageState();

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/functions/recommend_functions.dart';
+import 'package:untitled/pages/add_text_page.dart';
 
 class CameraDialog extends StatefulWidget {
   @override
@@ -6,7 +8,11 @@ class CameraDialog extends StatefulWidget {
 }
 
 class _CameraDialogState extends State<CameraDialog> {
-  String? groupValue;
+  Future<List<String>> getIdsFromGallery() async {
+    List<String> urls = await imageToUrls();
+    List<String> ids = await UrlsToYoutubeIds(urls);
+    return ids;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +34,12 @@ class _CameraDialogState extends State<CameraDialog> {
           ),
           ListTile(
             title: const Text('사진첩'),
-            onTap: () {
+            onTap: () async {
+              List<String> ids = await getIdsFromGallery();
               Navigator.of(context).pop();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => GalleryPage()),
+                MaterialPageRoute(builder: (context) => AddTextPage(ids: ids)),
               );
             },
           ),
