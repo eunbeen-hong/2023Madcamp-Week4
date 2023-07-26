@@ -224,3 +224,29 @@ UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
     books: userBooks,
   );
 }
+
+Future<void> signUpUser(String email, String password, String username) async {
+  try {
+    String urlString = 'http://172.10.5.155/api/create_user';
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> data = {'username': username, 'email': email, 'password': password};
+    String body = jsonEncode(data);
+
+    Uri url = Uri.parse(urlString); // Convert String URL to Uri object
+
+    http.Response response = await http.post(url, headers: headers, body: body);
+
+
+    if (response.statusCode == 200) {
+      // Request successful, parse the response data
+      String responseData = response.body;
+      print('Response data: $responseData');
+    } else {
+      // Request failed, handle the error
+      print('Error: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
+    return null;
+  }
+}
