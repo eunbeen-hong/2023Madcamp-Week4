@@ -91,11 +91,10 @@ class _TestPageState extends State<TestPage> {
                   final File file = File(pickedFile.path);
 
                   // Send OCR request and get OCRResult
-                  OCRResult result = await sendOCRResult(file, bookName, author, ocrResult);
+                  OCRResult result = await sendOCRResult(bookName, author, ocrResult);
 
                   // Print the OCRResult
                   print("Received OCR Result:");
-                  print("Image URL: ${result.imageUrl}");
                   print("Song List:");
                   for (var song in result.songList) {
                     print("Title: ${song['title']}, Artist: ${song['artist']}");

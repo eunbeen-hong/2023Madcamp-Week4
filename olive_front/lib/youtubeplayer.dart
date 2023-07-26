@@ -14,7 +14,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   int _currentIndex = 0;
 
   Future<void> _loadIds() async {
-    List<String> urls = await imageToUrls();
+    Map<String, dynamic> rst = await imageToUrls();
+    List<String> urls = rst['urls'];
     _ids = await UrlsToYoutubeIds(urls);
     _controller.load(_ids[_currentIndex]);
   }
@@ -114,7 +115,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
 
               ElevatedButton(
                 onPressed: () async {
-                  List<String> urls = await imageToUrls();
+                  Map<String, dynamic> rst = await imageToUrls();
+                  List<String> urls = rst['urls'];
                   List<String> ids = await UrlsToYoutubeIds(urls);
 
                   // 이제 ids를 사용할 수 있습니다.

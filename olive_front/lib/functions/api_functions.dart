@@ -6,9 +6,9 @@ import 'package:untitled/functions/user_info.dart';
 
 class OCRResult {
   final List<Map<String, String>> songList;
-  final String imageUrl;
+  String localPath;
 
-  OCRResult({required this.songList, required this.imageUrl});
+  OCRResult({required this.songList, required this.localPath});
 }
 
 Future<XFile?> pickImage() async {
@@ -41,16 +41,13 @@ Future<void> sendTextAndImage(String text) async {
 }
 
 // use book desc for text when first creating book
-Future<OCRResult> sendOCRResult(File file, String bookName, String author, String text) async {
+Future<OCRResult> sendOCRResult(String bookName, String author, String text) async {
   try {
     String url = 'http://172.10.5.155/api/ocr_result'; // Replace with your server's URL
 
     // Read the image file as bytes and encode it to base64
-    List<int> imageBytes = await file.readAsBytes();
-    String base64Image = base64Encode(imageBytes);
-
     // Create a JSON payload containing the base64 encoded image data
-    Map<String, dynamic> requestBody = {'image': base64Image, 'text':text, 'book_name': bookName, 'author': author};
+    Map<String, dynamic> requestBody = {'text':text, 'book_name': bookName, 'author': author};
     String requestBodyJson = jsonEncode(requestBody);
 
     // Set the headers for JSON content
@@ -62,7 +59,6 @@ Future<OCRResult> sendOCRResult(File file, String bookName, String author, Strin
     if (response.statusCode == 200) {
       // Parse the server response JSON (if needed)
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      String imageUrl = jsonResponse['image_url'];
 
       List<dynamic> songListJson = jsonResponse['song_list'];
       List<Map<String, String>> songList = songListJson.map((song) {
@@ -73,10 +69,9 @@ Future<OCRResult> sendOCRResult(File file, String bookName, String author, Strin
       }).toList();
 
       print("Image uploaded successfully to server.");
-      print("URL: $imageUrl");
       print("songList: $songList");
 
-      return OCRResult(songList: songList, imageUrl: imageUrl);
+      return OCRResult(songList: songList, localPath: '');
     } else {
       print("Failed to upload image to server. Status code: ${response.statusCode}");
     }
@@ -85,7 +80,7 @@ Future<OCRResult> sendOCRResult(File file, String bookName, String author, Strin
   }
 
 
-  return OCRResult(songList: [], imageUrl: '');
+  return OCRResult(songList: [], localPath: '');
 }
 
 Future<void> uploadImage(File file) async {
