@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:untitled/pages/add_book_page.dart';
 import 'package:untitled/functions/recommend_functions.dart';
 import 'package:untitled/functions/user_info.dart';
@@ -51,23 +52,43 @@ class _SearchCategoryPageState extends State<SearchCategoryPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('카테고리 선택하기'),
-          content: Container(
-            width: double.maxFinite,
-            child: ListView(
-              children: _categories.map((category) => CategoryItem(category)).toList(),
+        return WillPopScope(
+          onWillPop: () async {
+            _selectedCategories = _categories.where((category) => category.isChecked).toList();
+            if (_selectedCategories.isEmpty) {
+              Fluttertoast.showToast(
+                msg: "카테고리를 선택해주세요!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
+              return Future.value(false); // Prevent the pop-up from being closed.
+            }
+            return Future.value(true); // Allow the pop-up to be closed.
+          },
+          child: AlertDialog(
+            title: Text('카테고리 선택하기'),
+            content: Container(
+              width: double.maxFinite,
+              child: ListView(
+                children: _categories.map((category) => CategoryItem(category)).toList(),
+              ),
             ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Close'),
+                onPressed: () {
+                  _selectedCategories = _categories.where((category) => category.isChecked).toList();
+                  if (_selectedCategories.isNotEmpty) {
+                    Navigator.of(context).pop(_selectedCategories);
+                  }
+                },
+              ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                _selectedCategories = _categories.where((category) => category.isChecked).toList();
-                Navigator.of(context).pop(_selectedCategories);
-              },
-            ),
-          ],
         );
       },
     ).then((selectedCategories) {
@@ -77,18 +98,18 @@ class _SearchCategoryPageState extends State<SearchCategoryPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => 
-            AddBookPage(
-              onBookAdded: widget.onBookAdded,
-              youtubeInfos: widget.youtubeInfos, 
-              selectedBook: widget.selectedBook, 
-              selectedCategories: selectedCategories,
+            builder: (context) =>
+              AddBookPage(
+                onBookAdded: widget.onBookAdded,
+                youtubeInfos: widget.youtubeInfos,
+                selectedBook: widget.selectedBook,
+                selectedCategories: selectedCategories,
               ),
           ),
         );
     });
-
   }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog();
