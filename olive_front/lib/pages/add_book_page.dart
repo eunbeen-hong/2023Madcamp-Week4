@@ -26,7 +26,6 @@ class _AddBookPageState extends State<AddBookPage> {
   void initState() {
     super.initState();
     if (widget.youtubeInfos != null) {
-      
       songNames = widget.youtubeInfos!.map((info) =>
       info.videoTitle.length > 20
           ? info.videoTitle.substring(0, 20) + '...'
@@ -36,7 +35,7 @@ class _AddBookPageState extends State<AddBookPage> {
     }
   }
 
-  void incrementCounter() {
+    void incrementCounter() {
     // Function to increment the counter when the InkWell is tapped.
     setState(() {
       counter++;
@@ -47,7 +46,7 @@ class _AddBookPageState extends State<AddBookPage> {
   Widget buildSongItem(int index) {
     String songName = songNames![index];
     return ListTile(
-      leading: Icon(Icons.music_note),
+      //leading: Icon(Icons.music_note),
       title: Text(songName),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -116,6 +115,7 @@ class _AddBookPageState extends State<AddBookPage> {
                 elevation: 4, // 그림자 효과 크기 조정
                 child: GestureDetector(
                   onTap: () {
+                    Navigator.pop(context);
                     showDialog(
                       context: context,
                       builder: (context) => SearchBookPage(),
@@ -188,37 +188,40 @@ class _AddBookPageState extends State<AddBookPage> {
                       ),
                     ),
                     SizedBox(height: 16),
-                  ],
-                ),
-              Card(
-                shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                elevation: 4, // 그림자 효과 크기 조정
-                child: GestureDetector(
-                  onTap: incrementCounter,
-                  child: Container(
-                    width: double.infinity,
-                    height: 40,
-                    decoration: BoxDecoration( // 모서리 둥글기 설정
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: Color(0xff31795B),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'AI가 추천해주는 노래 찾기',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xffffffff),
+                    Card(
+                      shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      elevation: 4, // 그림자 효과 크기 조정
+                      child: GestureDetector(
+                        onTap: () {
+                          incrementCounter();
+                          //initState();
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration( // 모서리 둥글기 설정
+                            borderRadius: BorderRadius.circular(16.0),
+                            color: Color(0xff31795B),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'AI가 추천해주는 노래 찾기',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffffffff),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    SizedBox(height: 16),
+                  ],
                 ),
-              ),
-              SizedBox(height: 16),
-              if (counter != 0)
+              if (widget.youtubeInfos != null && counter != 0)
                 Column(
                   children: [
                     Card(
@@ -228,86 +231,126 @@ class _AddBookPageState extends State<AddBookPage> {
                       elevation: 4,
                       child: Container(
                         width: double.infinity,
-                        height: 320,
+                        height: widget.youtubeInfos!.length*60,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16.0),
                           color: Color(0xffffffff),
                         ),
-                        child: ListView.builder(
-                          itemCount: songNames!.length,
-                          itemBuilder: (context, index) {
-                            return buildSongItem(index);
-                          },
+                        child: SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          child: Column(
+                            children: [
+                              for (var i = 0; i < songNames!.length; i++)
+                                buildSongItem(i),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Card(
+                      shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      elevation: 4, // 그림자 효과 크기 조정
+                      child: GestureDetector(
+                        onTap: () async{
+                          List<Category>? selectedCategories = await showDialog<List<Category>>(
+                            context: context,
+                            builder: (context) => SearchCategoryPage(selectedBook: widget.selectedBook, selectedCategories: widget.selectedCategories, youtubeInfos: widget.youtubeInfos!),
+                          );
+                          print("widget.selectedCategories: ${widget.selectedCategories}");
+
+                          // Handle the selected categories if available.
+                          if (selectedCategories != null && selectedCategories.isNotEmpty) {
+                            setState(() {
+                              // Update the selectedCategories state variable with the selected categories.
+                              widget.selectedCategories = selectedCategories;
+                            });
+                          }
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration( // 모서리 둥글기 설정
+                            borderRadius: BorderRadius.circular(16.0),
+                            color: Color(0xff31795B),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '카테고리 고르기',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffffffff),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 16),
                   ],
                 ),
-              Card(
-                shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                elevation: 4, // 그림자 효과 크기 조정
-                child: GestureDetector(
-                  onTap: () async{
-                    List<Category>? selectedCategories = await showDialog<List<Category>>(
-                      context: context,
-                      builder: (context) => SearchCategoryPage(selectedBook: widget.selectedBook, selectedCategories: widget.selectedCategories, youtubeInfos: widget.youtubeInfos!),
-                    );
-                    print("widget.selectedCategories: ${widget.selectedCategories}");
-
-                    // Handle the selected categories if available.
-                    if (selectedCategories != null && selectedCategories.isNotEmpty) {
-                      setState(() {
-                        // Update the selectedCategories state variable with the selected categories.
-                        widget.selectedCategories = selectedCategories;
-                      });
-                    }
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    height: 40,
-                    decoration: BoxDecoration( // 모서리 둥글기 설정
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: Color(0xff31795B),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '카테고리 고르기',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xffffffff),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
               if (widget.selectedCategories != null && widget.selectedCategories!.isNotEmpty)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '선택된 카테고리',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      elevation: 4,
+                      child: Container(
+                        width: double.infinity,
+                        height: 60.0 * widget.selectedCategories!.length,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.0),
+                          color: Color(0xffffffff),
+                        ),
+                        child: SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          child: Column(
+                            children: widget.selectedCategories!
+                                .map((category) => ListTile(
+                              title: Text(category.name),
+                              // ... 추가적인 카테고리 정보를 표시할 수 있음
+                            ))
+                                .toList(),
+                          ),
+                        ),
                       ),
                     ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: widget.selectedCategories!.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(widget.selectedCategories![index].name),
-                // ... 추가적인 카테고리 정보를 표시할 수 있음
-                        );
-                      },
-                    ),
                     SizedBox(height: 16),
+                    Card(
+                      shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      elevation: 4, // 그림자 효과 크기 조정
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration( // 모서리 둥글기 설정
+                            borderRadius: BorderRadius.circular(16.0),
+                            color: Color(0xff31795B),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '추가 완료',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffffffff),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ElevatedButton(

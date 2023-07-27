@@ -307,7 +307,6 @@ Future<void> addCategory(String categoryName, String userId) async {
     print("Error adding category to server: $e");
   }
 }
-
 Future<void> createBook(BookDB book, List<String> categoryNames) async { 
    try {
     String url = 'http://172.10.5.155/api/create_book';
