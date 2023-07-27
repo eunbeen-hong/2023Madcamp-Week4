@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:untitled/functions/api_functions.dart';
 import 'package:untitled/functions/recommend_functions.dart';
-import 'package:untitled/youtube.dart';
-import 'add_book_page.dart';
+import 'package:untitled/pages/youtube.dart';
+import 'package:untitled/pages/add_book_page.dart';
 
 class SearchBookPage extends StatefulWidget {
   final VoidCallback onBookAdded;
@@ -65,8 +65,6 @@ class _SearchBookPageState extends State<SearchBookPage> {
     print("urls: $urls");
     List<YoutubeVideoInfo> youtubeInfos = await getUrlVideoInfo(urls);
 
-
-    print("Why if doesnt work?1");
     print("What is selectedBook?1: ${selectedBook}");
     //Navigator.pop(context, selectedBook);
     Navigator.pushReplacement(
@@ -80,7 +78,6 @@ class _SearchBookPageState extends State<SearchBookPage> {
         )),
     );
     print("youtubeInfos: $youtubeInfos");
-    //Navigator.pop(context);
   }
 
   @override

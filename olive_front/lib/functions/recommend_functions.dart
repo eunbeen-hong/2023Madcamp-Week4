@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled/youtube.dart';
+import 'package:untitled/pages/youtube.dart';
 import 'package:untitled/functions/api_functions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
