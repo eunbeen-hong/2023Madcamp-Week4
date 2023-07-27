@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/functions/recommend_functions.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:untitled/functions/user_info.dart';
 
 class YoutubePlayerPage extends StatefulWidget {
-  final Map<String, dynamic> song_imageUrl;
-  YoutubePlayerPage({required this.song_imageUrl, Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> song_imageUrl_list;
+  final int index;
+  YoutubePlayerPage(
+      {required this.song_imageUrl_list, required this.index, Key? key})
+      : super(key: key);
 
   @override
   _YoutubePlayerPageState createState() => _YoutubePlayerPageState();
@@ -14,7 +15,7 @@ class YoutubePlayerPage extends StatefulWidget {
 class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   late YoutubePlayerController _controller;
   late TextEditingController _idController;
-  late List<String> _ids;
+  List<String> _ids = [];
   int _currentIndex = 0;
 
   void _playNext() {
@@ -46,8 +47,15 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   @override
   void initState() {
     super.initState();
+
+    _currentIndex = widget.index;
+
+    for (var song_url in widget.song_imageUrl_list) {
+      _ids.add(song_url['song'].songId);
+    }
+
     _controller = YoutubePlayerController(
-      initialVideoId: widget.song_imageUrl['song'].songId,
+      initialVideoId: widget.song_imageUrl_list[_currentIndex]['song'].songId,
       flags: const YoutubePlayerFlags(
         hideControls: true,
         mute: false,
@@ -58,7 +66,11 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
         forceHD: false,
         enableCaption: true,
       ),
-    );
+    )..addListener(() {
+        if (_controller.value.playerState == PlayerState.ended) {
+          _playNext();
+        }
+      });
   }
 
   @override
@@ -101,7 +113,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         // Use the image URL from Firebase Storage
-                        image: NetworkImage(widget.song_imageUrl['imageUrl']),
+                        image: NetworkImage(
+                            widget.song_imageUrl_list[0]['imageUrl']),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -161,7 +174,6 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                               );
                             },
                           ),
-                          
                           IconButton(
                             onPressed: _playNext,
                             icon: Icon(Icons.skip_next),

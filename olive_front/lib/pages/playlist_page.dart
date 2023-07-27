@@ -43,7 +43,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => YoutubePlayerPage(song_imageUrl: song_imageUrl_list[index]),
+                  builder: (context) => YoutubePlayerPage(song_imageUrl_list: song_imageUrl_list, index: index),
                 ),
               );
             },
