@@ -285,7 +285,7 @@ Future<void> addCategory(String categoryName, String userId) async {
 
     Map<String, dynamic> requestBody = {'category_name': categoryName, 'user_id': userId};
     String requestBodyJson = jsonEncode(requestBody);
-    
+
     Map<String, String> headers = {'Content-Type': 'application/json'};
     http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
 
