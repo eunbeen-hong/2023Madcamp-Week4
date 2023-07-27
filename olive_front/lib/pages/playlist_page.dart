@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
 import 'package:untitled/pages/add_text_page.dart';
 import 'package:untitled/youtubeplayer.dart';
 import 'package:untitled/functions/user_info.dart';
@@ -32,11 +31,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
     String songName = song_imageUrl_list[index]['song'].title;
     return ListTile(
       leading: Icon(Icons.music_note),
-      title: Flexible( // Flexible 추가
-        child: Marquee(
-          text: songName,
-        ),
-      ),
+      title: Text(songName),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment:
@@ -67,13 +62,10 @@ class _PlaylistPageState extends State<PlaylistPage> {
           children: [
             Image.asset('assets/olive_icon.png', width: 30, height: 30),
             SizedBox(width: 4),
-            Flexible(
-              child: Marquee(
-                text: "${widget.book.title} Playlist",
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-
+            Text(
+              "${widget.book.title} Playlist",
+              style: TextStyle(color: Colors.white),
+            ),
           ],
         ),
         automaticallyImplyLeading: false,
