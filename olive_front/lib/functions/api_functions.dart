@@ -17,6 +17,38 @@ Future<XFile?> pickImage() async {
   return image;
 }
 
+Future<void> removeBook(BookDB book) async {
+  try {
+    String url = 'http://172.10.5.155/api/remove_book';
+
+    Map<String, dynamic> requestBody = {'user_id': userInfo!.userid, 'book_id': book.bookId};
+    String requestBodyJson = jsonEncode(requestBody);
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    http.Response response = await http.delete(Uri.parse(url), headers: headers, body: requestBodyJson);
+
+    if (response.statusCode == 200) {
+      print("Successfully removed book from server.");
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      print('Response data: $responseData');
+                                          
+      for (var category in userInfo!.categories) {
+        if (category.bookIdList.contains(book.bookId)) {
+          category.bookIdList.remove(book.bookId);
+        }
+      }
+
+      userInfo!.books.remove(book);
+    } else {
+      print("Failed to remove book from server. Status code: ${response.statusCode}");
+    }
+
+  } catch (e) {
+    print("Error removing book from server: $e");
+  }
+
+}
+
 Future<void> sendTextAndImage(String text) async {
   XFile? imageFile = await pickImage();
   if (imageFile == null) {

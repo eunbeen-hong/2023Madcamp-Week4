@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:untitled/pages/add_category_page.dart';
 import 'package:untitled/pages/playlist_page.dart';
 import 'package:untitled/functions/user_info.dart';
-
+import 'package:untitled/functions/api_functions.dart';
 import 'add_book_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 // TODO: 각 페이지 상단 표시 이름 정리
 
 class _HomePageState extends State<HomePage> {
-  bool isExpanded = false; // 추가된 변수
+  bool isExpanded = false;
   bool _isPlaying = false;
   final List<int> colorCodes = <int>[600, 500, 100];
 
@@ -215,6 +215,43 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => PlaylistPage(book: book)), 
+                                  );
+                                },
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('책 삭제'),
+                                      content: Text(
+                                        '정말로 책을 삭제하시겠습니까?'
+                                      ),
+                                      actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // The user confirmed the removal, proceed with dismissal
+                                          Navigator.pop(context, true);
+                                          
+                                          removeBook(book);
+                                          // Show a SnackBar to inform the user that the book was removed
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                                '${book.title}이/가 삭제되었습니다.'),
+                                          ));
+                                        },
+                                        child: Text('삭제'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          // The user canceled the removal, close the dialog
+                                          Navigator.pop(context, false);
+                                        },
+                                        child: Text('취소'),
+                                      ),
+                                        
+
+                                      ]
+                                    )
                                   );
                                 },
                                 child: Container(
