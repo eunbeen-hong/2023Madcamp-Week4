@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f6453e3e-8c1f-4886-8d0a-eaf60551c973" name="Changes" comment="hahaha">
-      <change afterPath="$PROJECT_DIR$/olive_front/android/app/src/main/res/mipmap-xhdpi/olive_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/olive_front/lib/pages/start.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/olive_front/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/olive_front/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/olive_front/lib/functions/api_functions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/olive_front/lib/functions/api_functions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/olive_front/lib/pages/home_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/olive_front/lib/pages/home_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/olive_front/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/olive_front/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/olive_front/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme" beforeDir="false" afterPath="$PROJECT_DIR$/olive_front/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/olive_front/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/olive_front/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/olive_front/lib/pages/login_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/olive_front/lib/pages/login_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/olive_front/lib/pages/sign_up_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/olive_front/lib/pages/sign_up_page.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

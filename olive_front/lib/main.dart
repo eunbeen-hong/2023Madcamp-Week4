@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/my_home_page.dart';
 import 'package:untitled/pages/login_page.dart';
+import 'package:untitled/pages/start.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF808000)),
         useMaterial3: true,
       ),
-      home: LoginPage(), // Changed the home to LoginPage
+      home: StartPage(), // Changed the home to LoginPage
     );
   }
 }
