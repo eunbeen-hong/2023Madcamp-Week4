@@ -17,10 +17,6 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   late List<String> _ids;
   int _currentIndex = 0;
 
-  Future<void> _loadIds() async {
-    _controller.load(widget.song_imageUrl['song'].songId);
-  }
-
   void _playNext() {
     setState(() {
       _currentIndex++;
@@ -50,9 +46,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   @override
   void initState() {
     super.initState();
-    _idController = TextEditingController();
     _controller = YoutubePlayerController(
-      initialVideoId: '', // 사용자가 입력한 URL에 해당하는 비디오를 재생하기 위해 초기 값은 비워둡니다.
+      initialVideoId: widget.song_imageUrl['song'].songId,
       flags: const YoutubePlayerFlags(
         hideControls: true,
         mute: false,
