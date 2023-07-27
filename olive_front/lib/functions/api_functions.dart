@@ -72,6 +72,31 @@ Future<void> sendTextAndImage(String text) async {
   }
 }
 
+Future<void> addSongs(String bookId, List<SongDB> songs) async {
+  try {
+    String url = 'http://172.10.5.155/api/add_song';
+
+    Map<String, dynamic> requestBody = {'user_id': userInfo!.userid, 'book_id': bookId, 'songs': songs.map((song) => song.toJson()).toList()};
+    String requestBodyJson = jsonEncode(requestBody);
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
+
+    if (response.statusCode == 200) {
+      print("Successfully added songs to server.");
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      print('Response data: $responseData');
+
+      userInfo!.books.firstWhere((book) => book.bookId == bookId).images.last.songs.addAll(songs);
+    } else {
+      print("Failed to add songs to server. Status code: ${response.statusCode}");
+    }
+
+  } catch (e) {
+    print("Error adding songs to server: $e");
+  }
+}
+
 Future<void> addImageAndSongs(String bookId, File image, List<SongDB> songs) async {
   try {
     String url = 'http://172.10.5.155/api/add_image_and_songs';

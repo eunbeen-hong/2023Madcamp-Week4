@@ -202,7 +202,7 @@ def create_user(request):
     email = data.get('email')
     password = data.get('password')
 
-    # TODO: check if user already exists (optional)
+    # TODO: check if user already exists (opti3onal)
 
     # Create a new user in the Firebase Realtime Database
     user_ref = db.reference('users')
@@ -335,19 +335,16 @@ def add_book_to_category(request):
 def add_song(request):
     data = request.json
     user_id = data.get('user_id')
-    book_name = data.get('book_name')
-    image_idx = data.get('image_idx')
+    book_id = data.get('book_id')
     songs = data.get('songs')
 
-    book_query = db.reference(f'users/{user_id}/books').order_by_child(
-        'title').equal_to(book_name).get()
-    book_id = None
-    for key, _ in book_query.items():
-        book_id = key
+    for song in songs:
+        song['song_id'] = song.pop('songId')
+        song['url'] = song.pop('songUrl')
 
     # Add the song to the image's songs list
     user_ref = db.reference(f'users/{user_id}')
-    image_ref = user_ref.child(f'books/{book_id}/images/{image_idx}')
+    image_ref = user_ref.child(f'books/{book_id}/images/0')
     songs_list = image_ref.child('songs').get()
     if songs_list:
         for song in songs:
