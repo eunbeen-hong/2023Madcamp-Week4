@@ -72,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //color: Color(0xffe3e3e3),
         child: PageView(
           controller: _pageController,
+          physics: NeverScrollableScrollPhysics(), // 스와이프 막기
           children: _widgetOptions,
           onPageChanged: _onPageChanged,
         ),
@@ -93,18 +94,10 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.search),
               label: 'Search',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.developer_mode),
-              label: 'Dev Tools',
-            )
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Color(0xff31795B),
-          unselectedItemColor: Color(0xffE6F0EC),
+          unselectedItemColor: Color(0xff31795B),
           onTap: _onItemTapped,
           selectedFontSize: 10.0, // 선택된 아이템의 텍스트 크기 설정
           unselectedFontSize: 10.0, // 선택되지 않은 아이템의 텍스트 크기 설정
