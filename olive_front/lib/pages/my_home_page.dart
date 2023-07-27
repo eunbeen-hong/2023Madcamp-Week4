@@ -1,6 +1,6 @@
 import 'package:untitled/pages/home_page.dart';
 import 'package:untitled/dev/ocr.dart';
-import 'package:untitled/pages/testing_page.dart';
+import 'package:untitled/dev/testing_page.dart';
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
