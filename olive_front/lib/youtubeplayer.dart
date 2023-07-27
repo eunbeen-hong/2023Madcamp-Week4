@@ -92,14 +92,16 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                 ),
                 Center(
                   child: Container(
-                    width: 200.0,
-                    height: 200.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        // Use the image URL from Firebase Storage
-                        image: NetworkImage(widget.song_imageUrl['imageUrl']),
-                        fit: BoxFit.cover,
-                      ),
+                    width: 200,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: 
+                        Image.network(
+                          widget.song_imageUrl['imageUrl'],
+                          fit: BoxFit.cover,
+                          width: 200, // TODO: 크기 조금 더 키워 주세요
+                          height: 200,
+                        ),
                     ),
                   ),
                 ),
