@@ -300,7 +300,13 @@ class _AddBookPageState extends State<AddBookPage> {
                           child: Column(
                             children: widget.selectedCategories!
                                 .map((category) => ListTile(
-                              title: Text(category.name),
+                              title: Expanded( // Add this
+                                child: Text(
+                                  "${category.name}",
+                                  style: TextStyle(color: Colors.white),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                               // ... 추가적인 카테고리 정보를 표시할 수 있음
                             ))
                                 .toList(),

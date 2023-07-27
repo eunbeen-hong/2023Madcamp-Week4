@@ -62,9 +62,12 @@ class _PlaylistPageState extends State<PlaylistPage> {
           children: [
             Image.asset('assets/olive_icon.png', width: 30, height: 30),
             SizedBox(width: 4),
-            Text(
-              "${widget.book.title} Playlist",
-              style: TextStyle(color: Colors.white),
+            Expanded( // Add this
+              child: Text(
+                "${widget.book.title} Playlist",
+                style: TextStyle(color: Colors.white),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -139,6 +142,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                                   children: [
                                     Text(
                                       widget.book.title,
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.bold,
@@ -147,6 +151,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                                     ),
                                     Text(
                                       widget.book.author,
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontSize: 16.0,
                                         color: Colors.black,
