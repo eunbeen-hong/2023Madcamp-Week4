@@ -56,12 +56,12 @@ Future<void> _refresh() async {
                   ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬 설정
                   children: [
                     Padding(
                       padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0, bottom: 0.0),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬 설정
                         children: [
                           Container(
                             width: 30,
@@ -151,48 +151,48 @@ Future<void> _refresh() async {
                 itemCount: userInfo!.categories.length + 1,
                 itemBuilder: (BuildContext context, int index) {
                   // if (index == entries.length) {
-                  if (index == userInfo!.categories.length) {
-                    return GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AddCategoryPage(),
-                        );
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        elevation: 4, // 그림자 효과 크기 조정
-                        child: Container(
-                          width: 160,
-                          height: 100,
-                          color: Color(0xffffffff),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                alignment: Alignment.center,
-                                child: Image.asset('assets/olive_icon.png'),
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                '책칸 추가하기',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                    if (index == userInfo!.categories.length) {
+                      return GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AddCategoryPage(),
+                          );
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          elevation: 4, // 그림자 효과 크기 조정
+                          child: Container(
+                            width: 160,
+                            height: 100,
+                            color: Color(0xffffffff),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  alignment: Alignment.center,
+                                  child: Image.asset('assets/olive_icon.png'),
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 8),
+                                Text(
+                                  '책칸 추가하기',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
+                      );
                   }
-
+                  
                   String title = userInfo!.categories[index].categoryName;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +218,6 @@ Future<void> _refresh() async {
                             String bookId = userInfo!.categories[index].bookIdList[hIndex];
                             BookDB? book = userInfo!.books.firstWhere((b) => b.bookId == bookId);
                             String defaultImageUrl = ''; // TODO: find default book cover url
-
                             return GestureDetector( 
                                 onTap: () {
                                   Navigator.push(
@@ -278,23 +277,12 @@ Future<void> _refresh() async {
                                         },
                                         child: Text('취소'),
                                       ),
+                                        
+
                                       ]
                                     )
                                   );
                                 },
-//                                 child: Container(
-//                                   width: 160,
-//                                   color: Colors.transparent,
-//                                   child: Center(
-//                                     child: 
-//                                       Image.network(
-//                                         book?.images[0].imageUrl ?? defaultImageUrl,
-//                                         width: 140, // TODO: 홈페이지 책 표지 사진 조절
-//                                         height: 200,
-//                                       ),
-//                                   ),
-//                                 ),
-//                               ),
                             );
                           },
                         ),
@@ -303,6 +291,7 @@ Future<void> _refresh() async {
                     ],
                   );
                 },
+              ),
               ),
             ),
           ],
