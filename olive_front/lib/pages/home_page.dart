@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:untitled/pages/add_category_page.dart';
 import 'package:untitled/pages/playlist_page.dart';
 import 'package:untitled/functions/user_info.dart';
-
+import 'package:untitled/functions/api_functions.dart';
 import 'add_book_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 // TODO: 각 페이지 상단 표시 이름 정리
 
 class _HomePageState extends State<HomePage> {
-  bool isExpanded = false; // 추가된 변수
+  bool isExpanded = false;
   bool _isPlaying = false;
   final List<int> colorCodes = <int>[600, 500, 100];
 
@@ -211,31 +211,59 @@ class _HomePageState extends State<HomePage> {
                             String bookId = userInfo!.categories[index].bookIdList[hIndex];
                             BookDB? book = userInfo!.books.firstWhere((b) => b.bookId == bookId);
                             String defaultImageUrl = ''; // TODO: find default book cover url
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => PlaylistPage(book: book)),
-                                );
-                              },
-                              child: Container(
-                                width: 120, // Adjust the width of the book container as needed
-                                margin: EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 5,
-                                      blurRadius: 7,
-                                      offset: Offset(0, 3), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Image.network(
-                                    book?.images[0].imageUrl ?? defaultImageUrl,
-                                    height: 150,
-                                    fit: BoxFit.fitHeight,
+
+                            return GestureDetector( 
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => PlaylistPage(book: book)), 
+                                  );
+                                },
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('책 삭제'),
+                                      content: Text(
+                                        '정말로 책을 삭제하시겠습니까?'
+                                      ),
+                                      actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // The user confirmed the removal, proceed with dismissal
+                                          Navigator.pop(context, true);
+                                          
+                                          removeBook(book);
+                                          // Show a SnackBar to inform the user that the book was removed
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                                '${book.title}이/가 삭제되었습니다.'),
+                                          ));
+                                        },
+                                        child: Text('삭제'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          // The user canceled the removal, close the dialog
+                                          Navigator.pop(context, false);
+                                        },
+                                        child: Text('취소'),
+                                      ),
+                                      ]
+                                    )
+                                  );
+                                },
+                                child: Container(
+                                  width: 160,
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: 
+                                      Image.network(
+                                        book?.images[0].imageUrl ?? defaultImageUrl,
+                                        width: 140, // TODO: 홈페이지 책 표지 사진 조절
+                                        height: 200,
+                                      ),
                                   ),
                                 ),
                               ),
