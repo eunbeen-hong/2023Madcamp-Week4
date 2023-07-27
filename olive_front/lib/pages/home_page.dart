@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:untitled/pages/add_category_page.dart';
 import 'package:untitled/pages/playlist_page.dart';
 import 'package:untitled/functions/user_info.dart';
-
-import 'add_book_page.dart';
+import 'package:untitled/functions/api_functions.dart';
+import 'package:untitled/pages/add_book_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -11,10 +11,11 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+// TODO: 각 페이지 상단 표시 이름 정리
+
 class _HomePageState extends State<HomePage> {
-  bool isExpanded = false; // 추가된 변수
+  bool isExpanded = false;
   bool _isPlaying = false;
-  // final List<List<String>> entries = <List<String>>[['스릴러', '데미안', '라미안'], ['로맨스', '로로로','이'], ['철학', '기','보보보']];
   final List<int> colorCodes = <int>[600, 500, 100];
 
 
@@ -50,12 +51,12 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬 설정
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0, bottom: 0.0),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬 설정
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             width: 30,
@@ -143,48 +144,48 @@ class _HomePageState extends State<HomePage> {
                 itemCount: userInfo!.categories.length + 1,
                 itemBuilder: (BuildContext context, int index) {
                   // if (index == entries.length) {
-                    if (index == userInfo!.categories.length) {
-                      return GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AddCategoryPage(),
-                          );
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          elevation: 4, // 그림자 효과 크기 조정
-                          child: Container(
-                            width: 160,
-                            height: 100,
-                            color: Color(0xffffffff),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  alignment: Alignment.center,
-                                  child: Image.asset('assets/olive_icon.png'),
+                  if (index == userInfo!.categories.length) {
+                    return GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AddCategoryPage(),
+                        );
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder( // 모서리 라운드 효과 설정
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        elevation: 4, // 그림자 효과 크기 조정
+                        child: Container(
+                          width: 160,
+                          height: 100,
+                          color: Color(0xffffffff),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                alignment: Alignment.center,
+                                child: Image.asset('assets/olive_icon.png'),
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                '책칸 추가하기',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '책칸 추가하기',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
+                      ),
+                    );
                   }
-                  
+
                   String title = userInfo!.categories[index].categoryName;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,8 +200,9 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 10), // Add vertical spacing between the title and books
                       Container(
-                        height: 200,
+                        height: 150,
                         color: Color(0xffffffff),
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -209,11 +211,47 @@ class _HomePageState extends State<HomePage> {
                             String bookId = userInfo!.categories[index].bookIdList[hIndex];
                             BookDB? book = userInfo!.books.firstWhere((b) => b.bookId == bookId);
                             String defaultImageUrl = ''; // TODO: find default book cover url
+
                             return GestureDetector( 
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => PlaylistPage(book: book)), 
+                                  );
+                                },
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('책 삭제'),
+                                      content: Text(
+                                        '정말로 책을 삭제하시겠습니까?'
+                                      ),
+                                      actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // The user confirmed the removal, proceed with dismissal
+                                          Navigator.pop(context, true);
+                                          
+                                          removeBook(book);
+                                          // Show a SnackBar to inform the user that the book was removed
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                                '${book.title}이/가 삭제되었습니다.'),
+                                          ));
+                                        },
+                                        child: Text('삭제'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          // The user canceled the removal, close the dialog
+                                          Navigator.pop(context, false);
+                                        },
+                                        child: Text('취소'),
+                                      ),
+                                      ]
+                                    )
                                   );
                                 },
                                 child: Container(
@@ -228,10 +266,12 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                   ),
                                 ),
+                              ),
                             );
                           },
                         ),
                       ),
+                      SizedBox(height: 10),
                     ],
                   );
                 },

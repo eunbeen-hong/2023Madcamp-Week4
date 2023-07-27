@@ -28,6 +28,11 @@ def hello_world():
     return 'Hello, World!'
 
 
+@app.route('/api/remove_book', methods=['DELETE'])
+def remove_book_route():
+    return remove_book(request)
+
+
 @app.route('/api/ocr_result', methods=['POST'])
 def ocr_result_route():
     return ocr_result(request)
@@ -98,6 +103,14 @@ if __name__ == '__main__':
 
 
 '''
+루트 경로에서 아래 세줄 복붙
+
+서버 껐다 킬 때에는 ctrl + c 후 `python3 app.py` 만 다시 하면 됨
+'''
+
+'''
+
+cd madcamp4/olive_back
 source venv/bin/activate
 python3 app.py
 

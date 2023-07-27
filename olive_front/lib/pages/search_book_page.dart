@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:untitled/functions/api_functions.dart';
 import 'package:untitled/functions/recommend_functions.dart';
-import 'package:untitled/youtube.dart';
-import 'add_book_page.dart';
+import 'package:untitled/pages/youtube.dart';
+import 'package:untitled/pages/add_book_page.dart';
 
 class SearchBookPage extends StatefulWidget {
   final VoidCallback onBookAdded;
@@ -32,21 +32,19 @@ class _SearchBookPageState extends State<SearchBookPage> {
     );
 
 
-    // 응답 데이터를 JSON 형식으로 변환
     var data = json.decode(response.body);
 
-    // 검색 결과를 처리하여 리스트에 저장
     setState(() {
       searchResults = List<Map<String, dynamic>>.from(data['items']);
     });
   }
   void onBookSelected(Map<String, dynamic> book) async {
-    // 이전 화면으로 책 정보 전달
+    
     Map<String, dynamic> selectedBook = {
-      'image': book['image'], // 책 이미지 URL
-      'title': book['title'], // 책 제목
-      'author': book['author'], // 책 저자
-      'description': book['description'], // TODO 책 설명
+      'image': book['image'],
+      'title': book['title'],
+      'author': book['author'],
+      'description': book['description'],
     };
 
     OCRResult ocrResult = await sendOCRResult(selectedBook['title'], selectedBook['author'], selectedBook['description']);
@@ -67,8 +65,6 @@ class _SearchBookPageState extends State<SearchBookPage> {
     print("urls: $urls");
     List<YoutubeVideoInfo> youtubeInfos = await getUrlVideoInfo(urls);
 
-
-    print("Why if doesnt work?1");
     print("What is selectedBook?1: ${selectedBook}");
     //Navigator.pop(context, selectedBook);
     Navigator.pushReplacement(
@@ -82,7 +78,6 @@ class _SearchBookPageState extends State<SearchBookPage> {
         )),
     );
     print("youtubeInfos: $youtubeInfos");
-    //Navigator.pop(context);
   }
 
   @override
