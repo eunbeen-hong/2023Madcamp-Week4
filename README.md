@@ -2,6 +2,8 @@
 
 # [몰입캠프 Week 4] - Olive (올리브)
 
+<img src="https://github.com/pancakesontuesday/2023Madcamp-Week4/assets/128043904/743d6204-4b89-4639-8d38-0f79f6962f4a" alt="image" width="30%">
+
 ## 개발자 (Developers)
 
 - [홍은빈](https://github.com/pancakesontuesday), [김서경](https://github.com/seokyung1114), [신민영](https://github.com/myshin22)
