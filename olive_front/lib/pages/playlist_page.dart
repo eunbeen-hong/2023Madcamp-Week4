@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/add_text_page.dart';
-import 'package:untitled/youtubeplayer.dart';
+import 'package:untitled/pages/youtubeplayer.dart';
 import 'package:untitled/functions/user_info.dart';
+import 'package:untitled/pages/add_song_dialog.dart';
 
 
 class PlaylistPage extends StatefulWidget {
@@ -163,28 +164,36 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     ),
                   ),
                   SizedBox(height: 16.0),
-                  Container(
-                    width: double.infinity,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: Color(0xffE6F0EC),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        '직접 음악 추가하기',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff000000),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AddSongDialog(book: widget.book),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: Color(0xffE6F0EC),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          '직접 음악 추가하기',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff000000),
+                          ),
                         ),
                       ),
                     ),

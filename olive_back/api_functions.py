@@ -215,6 +215,14 @@ def create_user(request):
         'books': {},
     })
 
+    category_name = '기본 책장'
+    categories_ref = new_user_ref.child('categories')
+    new_category_ref = categories_ref.push()
+    new_category_ref.set({
+        'category_name': category_name,
+        'books': {}
+    })
+
     return jsonify({'message': 'User created successfully!'}), 200
 
 
