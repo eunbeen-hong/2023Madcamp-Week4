@@ -218,7 +218,7 @@ UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
       List<ImageDB> bookImages = [];
       for (var image in book['images']) {
         List<SongDB> imageSongs = [];
-        for (var song in image['songs']) {
+        for (var song in image['songs'] ?? []) {
           imageSongs.add(SongDB(
             title: song['title'] ?? '',
             songUrl: song['url'] ?? '',

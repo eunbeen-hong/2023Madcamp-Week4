@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isExpanded = false; // 추가된 변수
+  bool _isPlaying = false;
   // final List<List<String>> entries = <List<String>>[['스릴러', '데미안', '라미안'], ['로맨스', '로로로','이'], ['철학', '기','보보보']];
   final List<int> colorCodes = <int>[600, 500, 100];
 
@@ -99,7 +100,8 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           SizedBox(height: 16),
                           Container(
-                            padding: EdgeInsets.all(10),
+                            height: 40,
+                            padding: EdgeInsets.only(left: 3, top: 1, right: 3, bottom: 1),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(32),
@@ -107,6 +109,7 @@ class _HomePageState extends State<HomePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
+                                SizedBox(width: 0),
                                 Text(
                                   '음악 제목',
                                   style: TextStyle(fontSize: 18),
@@ -114,15 +117,12 @@ class _HomePageState extends State<HomePage> {
                                 Row(
                                   children: <Widget>[
                                     IconButton(
-                                      icon: Icon(Icons.play_arrow),
+                                      icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
                                       onPressed: () {
-                                        // 재생 버튼 눌렸을 때 수행할 동작
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.stop),
-                                      onPressed: () {
-                                        // 정지 버튼 눌렸을 때 수행할 동작
+                                        setState(() {
+                                          _isPlaying = !_isPlaying;
+                                        });
+                                        // 여기에 재생 및 일시정지 동작을 추가합니다.
                                       },
                                     ),
                                   ],
