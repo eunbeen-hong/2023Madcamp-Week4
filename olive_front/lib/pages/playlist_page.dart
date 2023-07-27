@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:untitled/pages/add_text_page.dart';
 import 'package:untitled/pages/youtubeplayer.dart';
 import 'package:untitled/functions/user_info.dart';
-import 'package:untitled/pages/add_song_dialog.dart';
 
 
 class PlaylistPage extends StatefulWidget {
@@ -44,7 +43,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => YoutubePlayerPage(song_imageUrl_list: song_imageUrl_list, index: index),
+                  builder: (context) => YoutubePlayerPage(song_imageUrl_list: song_imageUrl_list,index: index),
                 ),
               );
             },
@@ -52,6 +51,13 @@ class _PlaylistPageState extends State<PlaylistPage> {
         ],
       ),
     );
+  }
+
+  // FIXME: 어디에서도 안쓰이는..?
+  void incrementCounter() {
+    setState(() {
+      counter++;
+    });
   }
 
   @override
@@ -63,12 +69,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
           children: [
             Image.asset('assets/olive_icon.png', width: 30, height: 30),
             SizedBox(width: 4),
-            Expanded( // Add this
-              child: Text(
-                "${widget.book.title} Playlist",
-                style: TextStyle(color: Colors.white),
-                overflow: TextOverflow.ellipsis,
-              ),
+            Text(
+              "${widget.book.title} Playlist",
+              style: TextStyle(color: Colors.white),
             ),
           ],
         ),
@@ -143,7 +146,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
                                   children: [
                                     Text(
                                       widget.book.title,
-                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.bold,
@@ -152,7 +154,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
                                     ),
                                     Text(
                                       widget.book.author,
-                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontSize: 16.0,
                                         color: Colors.black,
@@ -169,36 +170,28 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     ),
                   ),
                   SizedBox(height: 16.0),
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AddSongDialog(book: widget.book),
-                      );
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.0),
-                        color: Color(0xffE6F0EC),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          '직접 음악 추가하기',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff000000),
-                          ),
+                  Container(
+                    width: double.infinity,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.0),
+                      color: Color(0xffE6F0EC),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        '직접 음악 추가하기',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff000000),
                         ),
                       ),
                     ),

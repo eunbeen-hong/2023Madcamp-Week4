@@ -4,8 +4,11 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:untitled/functions/user_info.dart';
 
 class YoutubePlayerPage extends StatefulWidget {
-  final Map<String, dynamic> song_imageUrl;
-  YoutubePlayerPage({required this.song_imageUrl, Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> song_imageUrl_list;
+  int index;
+  YoutubePlayerPage(
+      {required this.song_imageUrl_list, required this.index, Key? key})
+      : super(key: key);
 
   @override
   _YoutubePlayerPageState createState() => _YoutubePlayerPageState();
@@ -14,31 +17,30 @@ class YoutubePlayerPage extends StatefulWidget {
 class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   late YoutubePlayerController _controller;
   late TextEditingController _idController;
-  late List<String> _ids;
-  int _currentIndex = 0;
+  List<String> _ids = [];
 
   void _playNext() {
     setState(() {
-      _currentIndex++;
-      if (_currentIndex < _ids.length) {
-        _controller.load(_ids[_currentIndex]);
+      widget.index++;
+      if (widget.index < _ids.length) {
+        _controller.load(_ids[widget.index]);
       } else {
-        _currentIndex =
+        widget.index =
             0; // If we reach the end of the list, restart from the first video.
-        _controller.load(_ids[_currentIndex]);
+        _controller.load(_ids[widget.index]);
       }
     });
   }
 
   void _playPrevious() {
     setState(() {
-      _currentIndex--;
-      if (_currentIndex >= 0) {
-        _controller.load(_ids[_currentIndex]);
+      widget.index--;
+      if (widget.index >= 0) {
+        _controller.load(_ids[widget.index]);
       } else {
-        _currentIndex = _ids.length -
+        widget.index = _ids.length -
             1; // If we reach the beginning of the list, go to the last video.
-        _controller.load(_ids[_currentIndex]);
+        _controller.load(_ids[widget.index]);
       }
     });
   }
@@ -46,8 +48,13 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   @override
   void initState() {
     super.initState();
+
+    for (var song_url in widget.song_imageUrl_list) {
+      _ids.add(song_url['song'].songId);
+    }
+
     _controller = YoutubePlayerController(
-      initialVideoId: widget.song_imageUrl['song'].songId,
+      initialVideoId: widget.song_imageUrl_list[widget.index]['song'].songId,
       flags: const YoutubePlayerFlags(
         hideControls: true,
         mute: false,
@@ -89,7 +96,10 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
               children: [
                 Container(
                   height: screenHeight,
-                  child: player,
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: player,
+                  ),
                 ),
                 Center(
                   child: Container(
@@ -98,7 +108,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         // Use the image URL from Firebase Storage
-                        image: NetworkImage(widget.song_imageUrl['imageUrl']),
+                        image: NetworkImage(
+                            widget.song_imageUrl_list[0]['imageUrl']),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -138,16 +149,25 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                             icon: Icon(Icons.skip_previous),
                             iconSize: 48.0,
                           ),
-                          IconButton(
-                            onPressed: _controller.value.isPlaying
-                                ? _controller.pause
-                                : _controller.play,
-                            icon: Icon(
-                              _controller.value.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
-                            ),
-                            iconSize: 48.0,
+                          ValueListenableBuilder(
+                            valueListenable: _controller,
+                            builder: (context, value, child) {
+                              return IconButton(
+                                onPressed: () {
+                                  if (_controller.value.isPlaying) {
+                                    _controller.pause();
+                                  } else {
+                                    _controller.play();
+                                  }
+                                },
+                                icon: Icon(
+                                  _controller.value.isPlaying
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                ),
+                                iconSize: 48.0,
+                              );
+                            },
                           ),
                           IconButton(
                             onPressed: _playNext,
