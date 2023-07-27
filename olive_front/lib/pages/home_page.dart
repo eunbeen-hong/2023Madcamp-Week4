@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                   }
-                  // String title = entries[index][0]; // 각 리스트의 첫 번째 항목을 제목으로 가져옴
+                  
                   String title = userInfo!.categories[index].categoryName;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                           itemBuilder: (BuildContext context, int hIndex) {
                             String bookId = userInfo!.categories[index].bookIdList[hIndex];
                             BookDB? book = userInfo!.books.firstWhere((b) => b.bookId == bookId);
-                            String bookName = book?.title ?? ''; // Use the null-aware operator (?.) to safely access the title property.
+                            String defaultImageUrl = ''; // TODO: find default book cover url
                             return GestureDetector( 
                                 onTap: () {
                                   Navigator.push(
@@ -220,7 +220,12 @@ class _HomePageState extends State<HomePage> {
                                   width: 160,
                                   color: Colors.transparent,
                                   child: Center(
-                                    child: Text(bookName),
+                                    child: 
+                                      Image.network(
+                                        book?.images[0].imageUrl ?? defaultImageUrl,
+                                        width: 140, // TODO: 홈페이지 책 표지 사진 조절
+                                        height: 200,
+                                      ),
                                   ),
                                 ),
                             );
