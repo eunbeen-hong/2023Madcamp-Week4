@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/add_book_page.dart';
 import 'package:untitled/functions/recommend_functions.dart';
+import 'package:untitled/functions/user_info.dart';
 
 
 class SearchCategoryPage extends StatefulWidget {
@@ -26,12 +27,7 @@ class Category extends ChangeNotifier {
 }
 
 class _SearchCategoryPageState extends State<SearchCategoryPage> {
-  List<Category> _categories = [
-    Category(name: 'Category 1'),
-    Category(name: 'Category 2'),
-    Category(name: 'Category 3'),
-    // ...
-  ];
+  List<Category> _categories = userInfo!.categories.map((category) => Category(name: category.categoryName)).toList();
 
   List<Category> _selectedCategories = []; // 체크된 카테고리를 담을 리스트
 

@@ -14,19 +14,21 @@ class PlaylistPage extends StatefulWidget {
 
 class _PlaylistPageState extends State<PlaylistPage> {
 
-  List<SongDB> songList = [];
+  List<Map<String, dynamic>> song_imageUrl_list = [];
   int counter = 0;
   
   @override
   void initState() {
     super.initState();
     for (var image in widget.book.images) {
-      songList.addAll(image.songs);
+      for (var song in image.songs) {
+        song_imageUrl_list.add({"song": song, "imageUrl": image.imageUrl});
+      }
     }
   }
 
   Widget buildSongItem(int index) {
-    String songName = songList[index].title;
+    String songName = song_imageUrl_list[index]['song'].title;
     return ListTile(
       leading: Icon(Icons.music_note),
       title: Text(songName),
@@ -41,7 +43,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => YoutubePlayerPage(song: songList[index]),
+                  builder: (context) => YoutubePlayerPage(song_imageUrl: song_imageUrl_list[index]),
                 ),
               );
             },
@@ -131,8 +133,11 @@ class _PlaylistPageState extends State<PlaylistPage> {
                                     ),
                                   ],
                                 ),
-                                child: Image.network(widget.book.images[0].imageUrl,
-                                    fit: BoxFit.cover),
+                                child: Image.network(
+                                widget.book.images[0].imageUrl, // Display the book image
+                                width: 140,
+                                height: 200,
+                              ),
                               ),
                               SizedBox(width: 16),
                               Expanded(
@@ -236,14 +241,14 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     elevation: 4,
                     child: Container(
                       width: double.infinity,
-                      height: songList.length*60,
+                      height: song_imageUrl_list.length*60,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16.0),
                         color: Color(0xffffffff),
                       ),
                       child: ListView.builder(
                         physics: NeverScrollableScrollPhysics(), // 이 부분을 추가해주시면 됩니다.
-                        itemCount: songList.length,
+                        itemCount: song_imageUrl_list.length,
                         itemBuilder: (context, index) {
                           return buildSongItem(index);
                         },

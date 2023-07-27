@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:untitled/pages/search_category_page.dart';
 import 'package:untitled/pages/search_book_page.dart';
 import 'package:untitled/functions/recommend_functions.dart';
+import 'package:untitled/functions/api_functions.dart';
+import 'package:untitled/functions/user_info.dart';
 
 class AddBookPage extends StatefulWidget {
   final Map<String, dynamic>? selectedBook;
@@ -310,6 +312,34 @@ class _AddBookPageState extends State<AddBookPage> {
                 ),
               ElevatedButton(
                 onPressed: () async {
+                  print(widget.selectedBook!['image']);
+                  ImageDB image = ImageDB(
+                      imageUrl: widget.selectedBook!['image'],
+                      songs: widget.youtubeInfos!.map((info) => SongDB(
+                        title: info.videoTitle,
+                        songUrl: info.url,
+                        songId: info.videoId,
+                      )).toList(),
+                    );
+                  print("heyy");
+                  BookDB b = BookDB(
+                    bookId: '',
+                    title: widget.selectedBook!['title'] ?? '',
+                    author: widget.selectedBook!['author'] ?? '' ?? '',
+                    last_accessed: '',
+                    bookDesc: widget.selectedBook!['description'] ?? '',
+                    images: [image],
+                    );
+                  print("hey");
+
+                  if (widget.selectedCategories == null) {
+                    widget.selectedCategories = [];
+                  }
+                  List<String> categoryNames = widget.selectedCategories!.map((category) => category.name).toList();
+              
+                  await createBook(b, categoryNames);
+                  // TODO: songs, book desc 안들어감
+                  
                   // 책칸 추가 완료 처리
                   Navigator.pop(context);
                 },

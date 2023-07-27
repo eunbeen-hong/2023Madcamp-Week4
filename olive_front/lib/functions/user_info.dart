@@ -1,7 +1,7 @@
 class CategoryDB {
-  final String categoryId;
-  final String categoryName;
-  final List<String> bookIdList;
+  late String categoryId;
+  late String categoryName;
+  late List<String> bookIdList;
 
   CategoryDB({
     required this.categoryId, 
@@ -11,9 +11,9 @@ class CategoryDB {
 }
 
 class SongDB {
-  final String title;
-  final String songUrl;
-  final String songId;
+  late String title;
+  late String songUrl;
+  late String songId;
 
   SongDB({
     required this.title, 
@@ -31,8 +31,8 @@ class SongDB {
 }
 
 class ImageDB {
-  final String imageUrl;
-  final List<SongDB> songs;
+  late String imageUrl;
+  late List<SongDB> songs;
 
   ImageDB({
     required this.imageUrl, 
@@ -41,12 +41,12 @@ class ImageDB {
 }
 
 class BookDB {
-    final String bookId;
-    final String title;
-    final String author;
-    final String last_accessed;
-    final String bookDesc;
-    final List<ImageDB> images;
+    late String bookId;
+    late String title;
+    late String author;
+    late String last_accessed;
+    late String bookDesc;
+    late List<ImageDB> images;
 
     BookDB({
         required this.bookId,
@@ -59,13 +59,13 @@ class BookDB {
 }
 
 class UserInfoDB {
-  final String userid;
-  final String username;
-  final String email;
-  final String password;
+  late String userid;
+  late String username;
+  late String email;
+  late String password;
 
-  final List<CategoryDB> categories;
-  final List<BookDB> books;
+  late List<CategoryDB> categories;
+  late List<BookDB> books;
 
   UserInfoDB({
     required this.userid, 

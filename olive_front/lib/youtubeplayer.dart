@@ -4,8 +4,8 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:untitled/functions/user_info.dart';
 
 class YoutubePlayerPage extends StatefulWidget {
-  final SongDB song;
-  YoutubePlayerPage({required this.song, Key? key}) : super(key: key);
+  final Map<String, dynamic> song_imageUrl;
+  YoutubePlayerPage({required this.song_imageUrl, Key? key}) : super(key: key);
 
   @override
   _YoutubePlayerPageState createState() => _YoutubePlayerPageState();
@@ -18,7 +18,7 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
   int _currentIndex = 0;
 
   Future<void> _loadIds() async {
-    _controller.load(widget.song.songId);
+    _controller.load(widget.song_imageUrl['song'].songId);
   }
 
   void _playNext() {
@@ -101,7 +101,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                     height: 200.0,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/example.jpg'),
+                        // Use the image URL from Firebase Storage
+                        image: NetworkImage(widget.song_imageUrl['imageUrl']),
                         fit: BoxFit.cover,
                       ),
                     ),
