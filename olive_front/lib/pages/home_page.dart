@@ -17,7 +17,12 @@ class _HomePageState extends State<HomePage> {
   bool isExpanded = false;
   bool _isPlaying = false;
   final List<int> colorCodes = <int>[600, 500, 100];
-
+Future<void> _refresh() async {
+  var newUserInfo = await getUserInfoFromServer(userInfo!.email, userInfo!.password);
+  setState(() {
+    userInfo = newUserInfo;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +143,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refresh,
               child: ListView.builder(
                 padding: const EdgeInsets.all(10),
                 // itemCount: entries.length + 1,
@@ -200,6 +207,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 10),
                       Container(
                         height: 150,
                         color: Color(0xffffffff),
@@ -217,6 +225,27 @@ class _HomePageState extends State<HomePage> {
                                     MaterialPageRoute(builder: (context) => PlaylistPage(book: book)), 
                                   );
                                 },
+                                child: Container(
+                                  width: 120, // Adjust the width of the book container as needed
+                                  margin: EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 5,
+                                        blurRadius: 7,
+                                        offset: Offset(0, 3), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: Image.network(
+                                      book?.images[0].imageUrl ?? defaultImageUrl,
+                                      height: 150,
+                                      fit: BoxFit.fitHeight,
+                                    ),
+                                  ),
+                                ),
                                 onLongPress: () {
                                   showDialog(
                                     context: context,
@@ -258,9 +287,11 @@ class _HomePageState extends State<HomePage> {
                           },
                         ),
                       ),
+                      SizedBox(height: 10),
                     ],
                   );
                 },
+              ),
               ),
             ),
           ],
