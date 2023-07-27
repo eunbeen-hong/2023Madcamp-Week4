@@ -48,13 +48,14 @@ class _LoginPageState extends State<LoginPage> {
                 String email = _emailController.text;
                 String password = _passwordController.text;
 
-                UserInfoDB? userInfo = await getUserInfoFromServer(email, password);
+                userInfo = await getUserInfoFromServer(email, password);
                 if (userInfo != null) {
-                  // printUserInfoDB(userInfo);
+                  print('User found');
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyHomePage(userInfo: userInfo),
+                      builder: (context) => MyHomePage(),
                     ),
                   );
                 } else {

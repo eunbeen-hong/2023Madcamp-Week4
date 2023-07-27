@@ -20,6 +20,14 @@ class SongDB {
     required this.songUrl,
     required this.songId
     });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'songUrl': songUrl,
+      'songId': songId,
+    };
+  }
 }
 
 class ImageDB {
@@ -68,3 +76,11 @@ class UserInfoDB {
     required this.books
     });
 }
+
+class GlobalData {
+  static UserInfoDB? userInfo;
+}
+
+
+UserInfoDB? get userInfo => GlobalData.userInfo;
+set userInfo(UserInfoDB? value) => GlobalData.userInfo = value;

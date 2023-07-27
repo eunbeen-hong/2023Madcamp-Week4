@@ -6,9 +6,7 @@ import 'package:untitled/functions/user_info.dart';
 import 'add_book_page.dart';
 
 class HomePage extends StatelessWidget {
-  final UserInfoDB userInfo;
-
-  HomePage({Key? key, required this.userInfo}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   // final List<List<String>> entries = <List<String>>[['스릴러', '데미안', '라미안'], ['로맨스', '로로로','이'], ['철학', '기','보보보']];
   final List<int> colorCodes = <int>[600, 500, 100];
@@ -55,7 +53,7 @@ class HomePage extends StatelessWidget {
                         ),
                         SizedBox(width: 8),
                         Text(
-                          userInfo.username,
+                          userInfo!.username,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -89,10 +87,10 @@ class HomePage extends StatelessWidget {
               child: ListView.builder(
                 padding: const EdgeInsets.all(10),
                 // itemCount: entries.length + 1,
-                itemCount: userInfo.categories.length + 1,
+                itemCount: userInfo!.categories.length + 1,
                 itemBuilder: (BuildContext context, int index) {
                   // if (index == entries.length) {
-                    if (index == userInfo.categories.length) {
+                    if (index == userInfo!.categories.length) {
                       return GestureDetector(
                         onTap: () {
                           showDialog(
@@ -135,7 +133,7 @@ class HomePage extends StatelessWidget {
                   }
 
                   // String title = entries[index][0]; // 각 리스트의 첫 번째 항목을 제목으로 가져옴
-                  String title = userInfo.categories[index].categoryName;
+                  String title = userInfo!.categories[index].categoryName;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,29 +153,23 @@ class HomePage extends StatelessWidget {
                         color: Color(0xffffffff),
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          // itemCount: entries[index].length - 1, // 제목을 제외한 나머지 항목 수
-                          itemCount: userInfo.categories[index].bookIdList.length,
+                          itemCount: userInfo!.categories[index].bookIdList.length,
                           itemBuilder: (BuildContext context, int hIndex) {
-                            // String name = entries[index][hIndex + 1]; // 제목을 제외하고 가져옴
-                            String bookId = userInfo.categories[index].bookIdList[hIndex];
-                            String name = '';
-                            userInfo.books.forEach((book) {
-                              if (book.bookId == bookId) {
-                                name = book.title;
-                              }
-                            });
-                            return GestureDetector( // 아이템에 GestureDetector를 적용하여 클릭 이벤트를 감지합니다.
+                            String bookId = userInfo!.categories[index].bookIdList[hIndex];
+                            BookDB? book = userInfo!.books.firstWhere((b) => b.bookId == bookId);
+                            String bookName = book?.title ?? ''; // Use the null-aware operator (?.) to safely access the title property.
+                            return GestureDetector( 
                                 onTap: () {
-                                  Navigator.push( // 클릭 시, Navigator를 이용하여 AddBookPage로 이동합니다.
+                                  Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => PlaylistPage()), // 이동하면서 'name'을 파라미터로 전달합니다.
+                                    MaterialPageRoute(builder: (context) => PlaylistPage(book: book)), 
                                   );
                                 },
                                 child: Container(
                                   width: 160,
                                   color: Colors.transparent,
                                   child: Center(
-                                    child: Text(name),
+                                    child: Text(bookName),
                                   ),
                                 ),
                             );

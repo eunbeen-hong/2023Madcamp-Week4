@@ -12,15 +12,7 @@ import 'package:flutter/services.dart';
 
 Future<OCRResult> scanImage() async {
   String path;
-  // // check if the camera is available
-  // if (_cameraController == null) return;
-
-  // final navigator = Navigator.of(context);
-
   try {
-    // final pictureFile = await _cameraController!.takePicture();
-    //
-    // final file = File(pictureFile.path);
 
     final imagePicker = ImagePicker();
     XFile? xFile = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -36,12 +28,6 @@ Future<OCRResult> scanImage() async {
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.korean);
     final recognizedText = await textRecognizer.processImage(inputImage);
 
-    // await navigator.push(
-    //   MaterialPageRoute(
-    //     builder: (BuildContext context) =>
-    //         ResultScreen(text: recognizedText.text),
-    //   ),
-    // );
 
     print("ocr_text: $recognizedText.text");
 
@@ -53,7 +39,7 @@ Future<OCRResult> scanImage() async {
     // String ocrResult = "분노의 포도가 사람들의 영혼을 가득 채우며 점점 익어간다.";
     String ocrResult = recognizedText.text;
 
-    print("sending...");
+    print("sending......");
     OCRResult result = await sendOCRResult(bookName, author, ocrResult);
 
     result.localPath = path;
@@ -213,14 +199,18 @@ Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
 
     return videoTitles;
   } else {
-    throw Exception('Failed to load video titles');
+    // FIXME
+    // throw Exception('Failed to load video titles');
+    return {
+      "IGQbgkNFMhk": "엘리멘탈~","IGQbgkNFMhk": "엘리멘탈~","IGQbgkNFMhk": "엘리멘탈~","IGQbgkNFMhk": "엘리멘탈~","IGQbgkNFMhk": "엘리멘탈~"};
   }
 }
 
 Future<List<YoutubeVideoInfo>> getUrlVideoInfo(List<String> urls) async {
   List<String> videoIds = await UrlsToYoutubeIds(urls);
+  print("videoIds: $videoIds");
   Map<String, String> videoTitles = await getYoutubeVideoTitles(videoIds);
-
+  print("videoTitles: $videoTitles");
   List<YoutubeVideoInfo> videoInfoList = [];
   for (int i = 0; i < urls.length; i++) {
     String url = urls[i];

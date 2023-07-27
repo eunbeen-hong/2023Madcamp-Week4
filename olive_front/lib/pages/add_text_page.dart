@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/camera_dialog.dart';
 import 'package:untitled/functions/recommend_functions.dart';
+import 'package:untitled/functions/api_functions.dart';
+import 'package:untitled/functions/user_info.dart';
+import 'dart:io';
+
+import 'package:untitled/pages/playlist_page.dart';
 
 class AddTextPage extends StatefulWidget {
+  final BookDB book;
   final List<YoutubeVideoInfo> youtubeInfos;
-  AddTextPage({Key? key,required this.youtubeInfos, required String localPath}) : super(key: key);
-
+  final String localPath;
+  AddTextPage({Key? key, required this.book, required this.youtubeInfos, required this.localPath}) : super(key: key);
+  
+  
   @override
   _AddTextPageState createState() => _AddTextPageState();
 }
@@ -14,13 +22,15 @@ class _AddTextPageState extends State<AddTextPage> {
   int counter = 0;
   List<String>? songNames;
   late List<bool> isSelected;
-
+  String bookName = '데미안';
 
   @override
   void initState() {
     super.initState();
     songNames = widget.youtubeInfos.map((info) =>
-    info.videoTitle.length > 20 ? info.videoTitle.substring(0, 20) + '...' : info.videoTitle
+    info.videoTitle.length > 20
+        ? info.videoTitle.substring(0, 20) + '...'
+        : info.videoTitle
     ).toList();
     isSelected = List<bool>.filled(songNames!.length, false);
   }
@@ -30,10 +40,12 @@ class _AddTextPageState extends State<AddTextPage> {
       counter++;
     });
   }
+
   Widget buildSongItem(int index) {
     String songName = songNames![index];
+    print("counter:$counter");
+    print("songNames:$songNames");
     return ListTile(
-      //leading: Icon(Icons.music_note),
       title: Text(songName),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -45,7 +57,7 @@ class _AddTextPageState extends State<AddTextPage> {
           ),
           IconButton(
             icon: Icon(Icons.add),
-            color: isSelected[index] ? Colors.grey : Colors.black, // 변경된 부분
+            color: isSelected[index] ? Colors.grey : Colors.black,
             onPressed: () {
               setState(() {
                 isSelected[index] = !isSelected[index];
@@ -56,8 +68,11 @@ class _AddTextPageState extends State<AddTextPage> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
+    final fileExists = File(widget.localPath).existsSync();
+    print("songNames:$songNames");
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -93,10 +108,12 @@ class _AddTextPageState extends State<AddTextPage> {
                 elevation: 4,
                 child: GestureDetector(
                   onTap: () {
+                    Navigator.pop(context);
                     showDialog(
                       context: context,
-                      builder: (context) => CameraDialog(),
+                      builder: (context) => CameraDialog(book: widget.book),
                     );
+                    incrementCounter();
                   },
                   child: Container(
                     width: double.infinity,
@@ -120,57 +137,59 @@ class _AddTextPageState extends State<AddTextPage> {
               ),
               SizedBox(height: 16.0),
               Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  elevation: 4,
-                  child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => CameraDialog(),
-                        );
-                      },
-                      child: Container(
-                        height: 300,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Icon(Icons.add, size: 100),
-                        ),
-                      ),
-                  ),
-              ),
-              SizedBox(height: 16),
-              Container(
-                width: double.infinity,
-                height: 40,
-                decoration: BoxDecoration(
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),
-                  color: Color(0xff31795B),
                 ),
-                child: Center(
-                  child: Text(
-                    'AI가 추천해주는 노래 찾기',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffffffff),
+                elevation: 4,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    showDialog(
+                      context: context,
+                      builder: (context) => CameraDialog(book: widget.book),
+                    );
+                    incrementCounter();
+                  },
+                  child: Container(
+                    height: 300,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                           spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: fileExists
+                          ? Image.file(
+                        File(widget.localPath),
+                        fit: BoxFit.cover,  // or BoxFit.fill
+                        height: 300,
+                        width: double.infinity,
+                      ) : Icon(Icons.add, size: 100),
                     ),
                   ),
                 ),
               ),
-              if (songNames != null)
+              SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '$bookName의 다음 구절에 어울리는 음악',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff000000),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+              if (fileExists != null)
                 Column(
                   children: [
                     Card(
@@ -185,17 +204,67 @@ class _AddTextPageState extends State<AddTextPage> {
                           borderRadius: BorderRadius.circular(16.0),
                           color: Color(0xffffffff),
                         ),
-                        child: ListView.builder(
-                          itemCount: songNames!.length,
-                          itemBuilder: (context, index) {
-                            return buildSongItem(index);
-                          },
+                        child: SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          child: Column(
+                            children: [
+                              for (var i = 0; i < songNames!.length; i++)
+                              buildSongItem(i),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 16),
-                  ],
-                ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      elevation: 4,
+                      child: GestureDetector(
+                        onTap: () {
+                          List<SongDB> songs = [];
+
+                          // TODO: 노래 하나도 선택 안되었으면 완료버튼 눌리면 안됨 (서버측 에러)
+                          
+                          for (var v in widget.youtubeInfos) {
+                            if (isSelected[widget.youtubeInfos.indexOf(v)]) {
+                              songs.add(SongDB(title: v.videoTitle, songUrl: v.url, songId: v.videoId));
+                            }
+                          }
+                          addImageAndSongs(widget.book.bookId, File(widget.localPath), songs);
+
+                          BookDB updatedBook = userInfo!.books.firstWhere((book) => book.bookId == widget.book.bookId);
+
+                          Navigator.pop(context);
+                          showDialog(
+                            context: context,
+                            builder: (context) => PlaylistPage(book: updatedBook),
+                          );
+                          
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.0),
+                            color: Color(0xff31795B),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '추가 완료하기',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffffffff),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
         ),
@@ -203,3 +272,4 @@ class _AddTextPageState extends State<AddTextPage> {
     );
   }
 }
+

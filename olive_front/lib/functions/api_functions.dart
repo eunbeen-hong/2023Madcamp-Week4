@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io'; // not supported in mobile platforms
+import 'dart:io';
 import 'package:untitled/functions/user_info.dart';
 
 class OCRResult {
@@ -40,13 +40,45 @@ Future<void> sendTextAndImage(String text) async {
   }
 }
 
+Future<void> addImageAndSongs(String bookId, File image, List<SongDB> songs) async {
+  try {
+    String url = 'http://172.10.5.155/api/add_image_and_songs';
+
+    List<int> imageBytes = await image.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    Map<String, dynamic> requestBody = {'image': base64Image,
+      'user_id': userInfo!.userid,
+      'book_id': bookId,
+      'songs': songs.map((song) => song.toJson()).toList(),
+      };
+    String requestBodyJson = jsonEncode(requestBody);
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
+
+
+    if (response.statusCode == 200) {
+      // Handle the response
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print("Successfully added image and songs to server. Response data: $jsonResponse");
+      userInfo!.books.firstWhere((book) => book.bookId == bookId).images.add(ImageDB(
+        imageUrl: jsonResponse['image_url'],
+        songs: songs,
+      ));
+    } else {
+      print("Failed to add image and songs to server. Status code: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error adding image and songs to server: $e");
+  }
+}
+
 // use book desc for text when first creating book
 Future<OCRResult> sendOCRResult(String bookName, String author, String text) async {
   try {
-    String url = 'http://172.10.5.155/api/ocr_result'; // Replace with your server's URL
-
-    // Read the image file as bytes and encode it to base64
-    // Create a JSON payload containing the base64 encoded image data
+    String url = 'http://172.10.5.155/api/ocr_result';
+    
     Map<String, dynamic> requestBody = {'text':text, 'book_name': bookName, 'author': author};
     String requestBodyJson = jsonEncode(requestBody);
 
@@ -57,18 +89,19 @@ Future<OCRResult> sendOCRResult(String bookName, String author, String text) asy
     http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
 
     if (response.statusCode == 200) {
-      // Parse the server response JSON (if needed)
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-
+      print("response.body:${response.body}");
+      print("3");
       List<dynamic> songListJson = jsonResponse['song_list'];
+      print("4");
       List<Map<String, String>> songList = songListJson.map((song) {
         return {
           'title': song[0] as String,
           'artist': song[1] as String,
         };
       }).toList();
+      print("5");
 
-      print("Image uploaded successfully to server.");
       print("songList: $songList");
 
       return OCRResult(songList: songList, localPath: '');
@@ -76,7 +109,7 @@ Future<OCRResult> sendOCRResult(String bookName, String author, String text) asy
       print("Failed to upload image to server. Status code: ${response.statusCode}");
     }
   } catch (e) {
-    print("Error uploading image to server: $e");
+    print("Error uploading OCR to server: $e");
   }
 
 
@@ -187,13 +220,13 @@ UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
         List<SongDB> imageSongs = [];
         for (var song in image['songs']) {
           imageSongs.add(SongDB(
-            title: song['title'],
-            songUrl: song['url'],
-            songId: song['song_id'],
+            title: song['title'] ?? '',
+            songUrl: song['url'] ?? '',
+            songId: song['song_id'] ?? '',
           ));
         }
         bookImages.add(ImageDB(
-          imageUrl: image['url'],
+          imageUrl: image['url'] ?? '',
           songs: imageSongs,
         ));
       }
@@ -243,5 +276,34 @@ Future<void> signUpUser(String email, String password, String username) async {
   } catch (e) {
     print('Error: $e');
     return null;
+  }
+}
+
+Future<void> addCategory(String categoryName, String userId) async {
+  try {
+    String url = 'http://172.10.5.155/api/add_category';
+
+    Map<String, dynamic> requestBody = {'category_name': categoryName, 'user_id': userId};
+    String requestBodyJson = jsonEncode(requestBody);
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
+
+    if (response.statusCode == 200) {
+      print("Successfully added category to server.");
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      print('Response data: $responseData');
+
+      userInfo!.categories.add(CategoryDB(
+        categoryId: responseData['category_id'],
+        categoryName: categoryName,
+        bookIdList: [],
+      ));
+    } else {
+      print("Failed to add category to server. Status code: ${response.statusCode}");
+    }
+
+  } catch (e) {
+    print("Error adding category to server: $e");
   }
 }

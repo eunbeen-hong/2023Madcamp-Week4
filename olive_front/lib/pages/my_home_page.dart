@@ -11,9 +11,8 @@ import 'package:untitled/youtubeplayer.dart';
 import 'package:untitled/functions/user_info.dart';
 
 class MyHomePage extends StatefulWidget {
-  final UserInfoDB userInfo;
   
-  MyHomePage({required this.userInfo, Key? key}) : super(key: key); // Keep this constructor
+  MyHomePage({Key? key}) : super(key: key); // Keep this constructor
 
 
   @override
@@ -28,11 +27,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     // Initialize the list of widgets with the HomePage widget
-    _widgetOptions.add(HomePage(userInfo: widget.userInfo));
+    _widgetOptions.add(HomePage());
     _widgetOptions.add(OcrPage());
     _widgetOptions.add(TestPage());
     _widgetOptions.add(YoutubePage());
-    _widgetOptions.add(YoutubePlayerPage());
+    // _widgetOptions.add(YoutubePlayerPage());
   }
 
   final PageController _pageController = PageController();
@@ -41,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (index == 1) { // "Add" 아이템이 선택되었을 때
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AddBookPage(selectedCategories: null,)), // AddBookPage로 이동
+        MaterialPageRoute(builder: (context) => AddBookPage(selectedBook: null, youtubeInfos: null, selectedCategories: null,)), // AddBookPage로 이동
       );
     } else {
       setState(() {
@@ -73,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //color: Color(0xffe3e3e3),
         child: PageView(
           controller: _pageController,
+          physics: NeverScrollableScrollPhysics(), // 스와이프 막기
           children: _widgetOptions,
           onPageChanged: _onPageChanged,
         ),
@@ -94,18 +94,10 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.search),
               label: 'Search',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.developer_mode),
-              label: 'Dev Tools',
-            )
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Color(0xff31795B),
-          unselectedItemColor: Color(0xffE6F0EC),
+          unselectedItemColor: Color(0xff31795B),
           onTap: _onItemTapped,
           selectedFontSize: 10.0, // 선택된 아이템의 텍스트 크기 설정
           unselectedFontSize: 10.0, // 선택되지 않은 아이템의 텍스트 크기 설정
