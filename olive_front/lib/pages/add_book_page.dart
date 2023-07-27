@@ -167,7 +167,7 @@ class _AddBookPageState extends State<AddBookPage> {
                                 width: 140,
                                 height: 200,
                               ),
-                          
+
                             ],
                           ),
                         ),
@@ -207,7 +207,7 @@ class _AddBookPageState extends State<AddBookPage> {
                     SizedBox(height: 16),
                   ],
                 ),
-              if (widget.youtubeInfos != null && counter != 0)
+              if (widget.youtubeInfos != null)
                 Column(
                   children: [
                     Card(
@@ -241,6 +241,7 @@ class _AddBookPageState extends State<AddBookPage> {
                       elevation: 4, // 그림자 효과 크기 조정
                       child: GestureDetector(
                         onTap: () async{
+                          Navigator.pop(context);
                           List<Category>? selectedCategories = await showDialog<List<Category>>(
                             context: context,
                             builder: (context) => SearchCategoryPage(onBookAdded: widget.onBookAdded, selectedBook: widget.selectedBook, selectedCategories: widget.selectedCategories, youtubeInfos: widget.youtubeInfos!),
@@ -299,7 +300,13 @@ class _AddBookPageState extends State<AddBookPage> {
                           child: Column(
                             children: widget.selectedCategories!
                                 .map((category) => ListTile(
-                              title: Text(category.name),
+                              title: Expanded( // Add this
+                                child: Text(
+                                  "${category.name}",
+                                  style: TextStyle(color: Colors.white),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                               // ... 추가적인 카테고리 정보를 표시할 수 있음
                             ))
                                 .toList(),

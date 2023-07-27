@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   http: ^0.13.3
   image_picker: ^0.8.4
+  fluttertoast: ^8.0.8
+  marquee: ^2.1.1
   
 
 
