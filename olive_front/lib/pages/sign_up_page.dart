@@ -18,33 +18,72 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff31795B), // 배경색을 변경
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: null,
+        //Text('Sign Up'),
+        backgroundColor: Color(0xff31795B), // AppBar 색상 변경
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                hintText: 'Email',
+            Container(
+              width: 60,
+              height: 60,
+              alignment: Alignment.center,
+              child: Image.asset('assets/olive_icon.png'),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'SIGN UP',
+              style: TextStyle(fontSize: 50, color: Colors.white, fontWeight: FontWeight.bold), // 큰 글씨로 변경
+            ),
+            SizedBox(height: 48),
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xffE6F0EC), // 박스 색 변경
+                borderRadius: BorderRadius.circular(10), // 모서리 라운드 처리
+              ),
+              child: TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  hintText: 'Email',
+                  border: InputBorder.none, // 기본 경계선 제거
+                  contentPadding: EdgeInsets.all(10), // 내부 패딩 추가
+                ),
               ),
             ),
             SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'Password',
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xffE6F0EC),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: 'Password',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(10),
+                ),
               ),
             ),
             SizedBox(height: 16),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                hintText: 'Username',
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xffE6F0EC),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  hintText: 'Username',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(10),
+                ),
               ),
             ),
             SizedBox(height: 16),
@@ -56,10 +95,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 await signUpUser(email, password, username);
                 Navigator.push(
-                context,
-                MaterialPageRoute(
+                  context,
+                  MaterialPageRoute(
                     builder: (context) => LoginPage(),
-                ),
+                  ),
                 );
               },
               child: Text('Sign Up'),
