@@ -224,8 +224,6 @@ class _AddTextPageState extends State<AddTextPage> {
                       child: GestureDetector(
                         onTap: () async {
                           List<SongDB> songs = [];
-
-                          // TODO: 노래 하나도 선택 안되었으면 완료버튼 눌리면 안됨 (서버측 에러)
                           
                           for (var v in widget.youtubeInfos) {
                             if (isSelected[widget.youtubeInfos.indexOf(v)]) {

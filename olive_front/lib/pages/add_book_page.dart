@@ -355,7 +355,6 @@ class _AddBookPageState extends State<AddBookPage> {
                           List<String> categoryNames = widget.selectedCategories!.map((category) => category.name).toList();
                       
                           await createBook(b, categoryNames);
-                          // TODO: songs 안들어감
 
                           widget.onBookAdded();
                           Navigator.pop(context);

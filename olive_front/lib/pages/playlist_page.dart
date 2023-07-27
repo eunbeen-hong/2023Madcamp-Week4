@@ -53,13 +53,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
     );
   }
 
-  // FIXME: 어디에서도 안쓰이는..?
-  void incrementCounter() {
-    setState(() {
-      counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

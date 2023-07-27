@@ -11,9 +11,10 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+// TODO: 각 페이지 상단 표시 이름 정리
+
 class _HomePageState extends State<HomePage> {
   bool isExpanded = false; // 추가된 변수
-  // final List<List<String>> entries = <List<String>>[['스릴러', '데미안', '라미안'], ['로맨스', '로로로','이'], ['철학', '기','보보보']];
   final List<int> colorCodes = <int>[600, 500, 100];
 
 
