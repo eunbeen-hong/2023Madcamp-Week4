@@ -222,7 +222,7 @@ class _AddTextPageState extends State<AddTextPage> {
                       ),
                       elevation: 4,
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           List<SongDB> songs = [];
 
                           // TODO: 노래 하나도 선택 안되었으면 완료버튼 눌리면 안됨 (서버측 에러)
@@ -232,7 +232,7 @@ class _AddTextPageState extends State<AddTextPage> {
                               songs.add(SongDB(title: v.videoTitle, songUrl: v.url, songId: v.videoId));
                             }
                           }
-                          addImageAndSongs(widget.book.bookId, File(widget.localPath), songs);
+                          await addImageAndSongs(widget.book.bookId, File(widget.localPath), songs);
 
                           BookDB updatedBook = userInfo!.books.firstWhere((book) => book.bookId == widget.book.bookId);
 

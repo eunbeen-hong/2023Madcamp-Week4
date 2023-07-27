@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:untitled/pages/search_category_page.dart';
 import 'package:untitled/pages/search_book_page.dart';
 import 'package:untitled/functions/recommend_functions.dart';
+import 'package:untitled/functions/api_functions.dart';
+import 'package:untitled/functions/user_info.dart';
 
 class AddBookPage extends StatefulWidget {
+  final VoidCallback onBookAdded;
   final Map<String, dynamic>? selectedBook;
   List<Category>? selectedCategories;
   final List<YoutubeVideoInfo>? youtubeInfos;
 
-  AddBookPage({Key? key, required this.youtubeInfos, required this.selectedBook, required this.selectedCategories}) : super(key: key);
+  AddBookPage({Key? key, required this.onBookAdded, required this.youtubeInfos, required this.selectedBook, required this.selectedCategories}) : super(key: key);
   @override
   _AddBookPageState createState() => _AddBookPageState();
 }
@@ -116,7 +119,7 @@ class _AddBookPageState extends State<AddBookPage> {
                     Navigator.pop(context);
                     showDialog(
                       context: context,
-                      builder: (context) => SearchBookPage(),
+                      builder: (context) => SearchBookPage(onBookAdded: widget.onBookAdded),
                     );
                   },
                   child: Container(
@@ -255,7 +258,7 @@ class _AddBookPageState extends State<AddBookPage> {
                         onTap: () async{
                           List<Category>? selectedCategories = await showDialog<List<Category>>(
                             context: context,
-                            builder: (context) => SearchCategoryPage(selectedBook: widget.selectedBook, selectedCategories: widget.selectedCategories, youtubeInfos: widget.youtubeInfos!),
+                            builder: (context) => SearchCategoryPage(onBookAdded: widget.onBookAdded, selectedBook: widget.selectedBook, selectedCategories: widget.selectedCategories, youtubeInfos: widget.youtubeInfos!),
                           );
                           print("widget.selectedCategories: ${widget.selectedCategories}");
 
@@ -326,7 +329,35 @@ class _AddBookPageState extends State<AddBookPage> {
                       ),
                       elevation: 4, // 그림자 효과 크기 조정
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          print(widget.selectedBook!['image']);
+                          ImageDB image = ImageDB(
+                              imageUrl: widget.selectedBook!['image'],
+                              songs: widget.youtubeInfos!.map((info) => SongDB(
+                                title: info.videoTitle,
+                                songUrl: info.url,
+                                songId: info.videoId,
+                              )).toList(),
+                            );
+
+                          BookDB b = BookDB(
+                            bookId: '',
+                            title: widget.selectedBook!['title'] ?? '',
+                            author: widget.selectedBook!['author'] ?? '' ?? '',
+                            last_accessed: '',
+                            bookDesc: widget.selectedBook!['description'] ?? '',
+                            images: [image],
+                            );
+
+                          if (widget.selectedCategories == null) {
+                            widget.selectedCategories = [];
+                          }
+                          List<String> categoryNames = widget.selectedCategories!.map((category) => category.name).toList();
+                      
+                          await createBook(b, categoryNames);
+                          // TODO: songs 안들어감
+
+                          widget.onBookAdded();
                           Navigator.pop(context);
                         },
                         child: Container(

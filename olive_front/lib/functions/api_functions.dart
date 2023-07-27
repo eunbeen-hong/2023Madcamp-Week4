@@ -218,7 +218,7 @@ UserInfoDB parseUserInfo(Map<String, dynamic> responseData) {
       List<ImageDB> bookImages = [];
       for (var image in book['images']) {
         List<SongDB> imageSongs = [];
-        for (var song in image['songs']) {
+        for (var song in image['songs'] ?? []) {
           imageSongs.add(SongDB(
             title: song['title'] ?? '',
             songUrl: song['url'] ?? '',
@@ -305,5 +305,39 @@ Future<void> addCategory(String categoryName, String userId) async {
 
   } catch (e) {
     print("Error adding category to server: $e");
+  }
+}
+Future<void> createBook(BookDB book, List<String> categoryNames) async { 
+   try {
+    String url = 'http://172.10.5.155/api/create_book';
+
+    Map<String, dynamic> requestBody = {
+      'user_id': userInfo!.userid,
+      'category_names': categoryNames,
+      'title': book.title,
+      'author': book.author,
+      'image_url': book.images[0].imageUrl,
+      'book_desc': book.bookDesc,
+      'songs': book.images[0].songs.map((song) => song.toJson()).toList(),
+      };
+    String requestBodyJson = jsonEncode(requestBody);
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    http.Response response = await http.post(Uri.parse(url), headers: headers, body: requestBodyJson);
+
+
+    if (response.statusCode == 200) {
+      // Handle the response
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      print("Successfully created book. Response data: $jsonResponse");
+      book.bookId = jsonResponse['book_id'];
+      book.last_accessed = jsonResponse['last_accessed'];
+      userInfo!.books.add(book);
+    } else {
+      print("Failed to create book. Status code: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error create book: $e");
   }
 }
