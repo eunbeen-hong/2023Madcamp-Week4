@@ -5,10 +5,11 @@ import 'package:untitled/functions/user_info.dart';
 
 
 class SearchCategoryPage extends StatefulWidget {
+  final VoidCallback onBookAdded;
   final Map<String, dynamic>? selectedBook;
   List<Category>? selectedCategories;
   final List<YoutubeVideoInfo> youtubeInfos;
-  SearchCategoryPage({Key? key, required this.youtubeInfos, required this.selectedBook, required this.selectedCategories}) : super(key: key);
+  SearchCategoryPage({Key? key, required this.onBookAdded, required this.youtubeInfos, required this.selectedBook, required this.selectedCategories}) : super(key: key);
 
   @override
   _SearchCategoryPageState createState() => _SearchCategoryPageState();
@@ -78,6 +79,7 @@ class _SearchCategoryPageState extends State<SearchCategoryPage> {
           MaterialPageRoute(
             builder: (context) => 
             AddBookPage(
+              onBookAdded: widget.onBookAdded,
               youtubeInfos: widget.youtubeInfos, 
               selectedBook: widget.selectedBook, 
               selectedCategories: selectedCategories,

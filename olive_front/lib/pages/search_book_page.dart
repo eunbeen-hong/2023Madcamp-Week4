@@ -7,6 +7,9 @@ import 'package:untitled/youtube.dart';
 import 'add_book_page.dart';
 
 class SearchBookPage extends StatefulWidget {
+  final VoidCallback onBookAdded;
+
+  SearchBookPage({Key? key, required this.onBookAdded}) : super(key: key);
   @override
   _SearchBookPageState createState() => _SearchBookPageState();
 }
@@ -43,10 +46,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
       'image': book['image'], // 책 이미지 URL
       'title': book['title'], // 책 제목
       'author': book['author'], // 책 저자
-      'bookDesc': book['description'], // TODO 책 설명
+      'description': book['description'], // TODO 책 설명
     };
 
-    OCRResult ocrResult = await sendOCRResult(selectedBook['title'], selectedBook['author'], selectedBook['bookDesc']);
+    OCRResult ocrResult = await sendOCRResult(selectedBook['title'], selectedBook['author'], selectedBook['description']);
 
     List<String> urls = [];
     print("ocrResult.songList: $ocrResult.songList");
@@ -72,6 +75,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
       context,
       MaterialPageRoute(builder: (context) => 
       AddBookPage(
+        onBookAdded: widget.onBookAdded,
         youtubeInfos: youtubeInfos, 
         selectedBook: selectedBook, 
         selectedCategories: null,
