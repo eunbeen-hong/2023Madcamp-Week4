@@ -16,6 +16,7 @@ class AddSongDialog extends StatefulWidget {
 class _AddSongDialogState extends State<AddSongDialog> {
   TextEditingController _searchController = TextEditingController();
 
+  List<YoutubeVideoInfo>? _searchedVideos;
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +44,14 @@ class _AddSongDialogState extends State<AddSongDialog> {
               }
               List<YoutubeVideoInfo> videos = await getUrlVideoInfo(urls);
 
-              for (var video in videos) {
-                buildSongItem(video);
-              }
-
+              setState(() {
+                _searchedVideos = videos;
+              });
             },
-            child: Text('추가하기'),
+            child: Text('검색'),
           ),
+          if (_searchedVideos != null && _searchedVideos!.isNotEmpty)
+            ..._searchedVideos!.map((video) => buildSongItem(video)).toList(),
         ],
       ),
     );
