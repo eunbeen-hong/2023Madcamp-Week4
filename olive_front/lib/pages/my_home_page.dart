@@ -92,21 +92,21 @@ class _MyHomePageState extends State<MyHomePage> {
         child: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
+              icon: Icon(Icons.person, color: Color(0x00000000)),
+              label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add_box),
-              label: 'Add',
+              icon: Icon(Icons.add_box, color: Color(0xff31795B)),
+              label: '책추가',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
+              icon: Icon(Icons.search, color: Color(0x00000000)),
+              label: '',
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Color(0xff31795B),
-          unselectedItemColor: Color(0xff31795B),
+          // selectedItemColor: Color(0xff31795B),
+          // unselectedItemColor: Color(0xff31795B),
           onTap: _onItemTapped,
           selectedFontSize: 10.0, // 선택된 아이템의 텍스트 크기 설정
           unselectedFontSize: 10.0, // 선택되지 않은 아이템의 텍스트 크기 설정
