@@ -74,7 +74,8 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
     return Scaffold(
       body: GestureDetector(
         onVerticalDragEnd: (details) {
-          if(details.primaryVelocity! > 0) { // When drag down
+          if (details.primaryVelocity! > 0) {
+            // When drag down
             Navigator.pop(context);
           }
         },
@@ -88,7 +89,10 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
               children: [
                 Container(
                   height: screenHeight,
-                  child: player,
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: player,
+                  ),
                 ),
                 Center(
                   child: Container(
@@ -137,17 +141,27 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
                             icon: Icon(Icons.skip_previous),
                             iconSize: 48.0,
                           ),
-                          IconButton(
-                            onPressed: _controller.value.isPlaying
-                                ? _controller.pause
-                                : _controller.play,
-                            icon: Icon(
-                              _controller.value.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
-                            ),
-                            iconSize: 48.0,
+                          ValueListenableBuilder(
+                            valueListenable: _controller,
+                            builder: (context, value, child) {
+                              return IconButton(
+                                onPressed: () {
+                                  if (_controller.value.isPlaying) {
+                                    _controller.pause();
+                                  } else {
+                                    _controller.play();
+                                  }
+                                },
+                                icon: Icon(
+                                  _controller.value.isPlaying
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                ),
+                                iconSize: 48.0,
+                              );
+                            },
                           ),
+                          
                           IconButton(
                             onPressed: _playNext,
                             icon: Icon(Icons.skip_next),
@@ -165,5 +179,4 @@ class _YoutubePlayerPageState extends State<YoutubePlayerPage> {
       ),
     );
   }
-
 }
