@@ -208,8 +208,9 @@ Future<Map<String, String>> getYoutubeVideoTitles(List<String> videoIds) async {
 
 Future<List<YoutubeVideoInfo>> getUrlVideoInfo(List<String> urls) async {
   List<String> videoIds = await UrlsToYoutubeIds(urls);
+  print("videoIds: $videoIds");
   Map<String, String> videoTitles = await getYoutubeVideoTitles(videoIds);
-
+  print("videoTitles: $videoTitles");
   List<YoutubeVideoInfo> videoInfoList = [];
   for (int i = 0; i < urls.length; i++) {
     String url = urls[i];

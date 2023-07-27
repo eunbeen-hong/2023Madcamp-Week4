@@ -49,21 +49,26 @@ class _SearchBookPageState extends State<SearchBookPage> {
     OCRResult ocrResult = await sendOCRResult(selectedBook['title'], selectedBook['author'], selectedBook['bookDesc']);
 
     List<String> urls = [];
+    print("ocrResult.songList: $ocrResult.songList");
     for (var song in ocrResult.songList) {
-      String? title = song[0];
-      String? artist = song[1];
+      String? title = song['title'];
+      String? artist = song['artist'];
+      print("song: $song");
+      print("song info : ${song['title']}, ${song['artist']}");
       if (title != null && artist != null) {
+        print("it is working");
         String youtubeUrl = await getYouTubeUrl(title, artist);
         urls.add(youtubeUrl);
       }
     }
+    print("urls: $urls");
     List<YoutubeVideoInfo> youtubeInfos = await getUrlVideoInfo(urls);
 
 
     print("Why if doesnt work?1");
     print("What is selectedBook?1: ${selectedBook}");
     //Navigator.pop(context, selectedBook);
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => 
       AddBookPage(
@@ -72,6 +77,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
         selectedCategories: null,
         )),
     );
+    print("youtubeInfos: $youtubeInfos");
     //Navigator.pop(context);
   }
 
