@@ -6,7 +6,7 @@
 
 ## 개발자 (Developers)
 
--  [신민영](https://github.com/myshin22), [홍은빈](https://github.com/pancakesontuesday), [김서경](https://github.com/seokyung1114),
+-   [홍은빈](https://github.com/pancakesontuesday), [김서경](https://github.com/seokyung1114),[신민영](https://github.com/myshin22)
 
 
 ## 기술 (Tech Stack)
